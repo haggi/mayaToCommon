@@ -5,6 +5,7 @@ import pymel.core as pm
 import os
 import shutil
 import sys
+import xml.etree.cElementTree as ET
 #from test.badsyntax_future3 import result
 
 log = logging.getLogger("renderLogger")
@@ -37,20 +38,16 @@ def compileOSLShaders(renderer="Corona"):
             pm.mel.trace(line.strip())
 
 def getShaderInfo(shaderPath):
-    print "Getting shader info for path", shaderPath
-    
+    print "Getting shader info for path", shaderPath    
     osoFiles = getOSOFiles(shaderPath)
-    
     return osoFiles
 
-def getOSODirs(renderer = "appleseed"):
-    
+def getOSODirs(renderer = "appleseed"):    
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
         shaderDir = path.path(__file__).parent() + "/shaders"
         print "Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir."
-
     osoDirs = set()
     for root, dirname, files in os.walk(shaderDir):
         for filename in files:
@@ -92,47 +89,96 @@ def analyzeContent(content):
     print "Analyze Content"
     r = content
     d = {}
+    currentElement = None
     for line in content:
         if len(line) == 0:
             continue
         if line.startswith("shader"):
             d['name'] = line.split(" ")[1].replace("\"", "")
-            d['outputs'] = []
+            d['mayaClassification'] = ""
+            d['mayaId'] = 0
+            d['help'] = ""
             d['inputs'] = []
-        elif "output" in line:
-            output = {}
-            output['name'] = line.split(" ")[0].replace("\"", "")
-            d['outputs'].append(output)
+            d['outputs'] = []
+            currentElement = d
         else:
-            print "input", line
             if line.startswith("Default value"):
-                input = d['inputs'][-1]
-                input['default'] = line.split(" ")[-1].replace("\"", "")
-                if input.has_key("type"):
-                    if input["type"] in ["color", "vector"]:
+                currentElement['default'] = line.split(" ")[-1].replace("\"", "")
+                if currentElement.has_key("type"):
+                    if currentElement["type"] in ["color", "vector"]:
                         vector = line.split("[")[-1].split("]")[0]
                         vector = vector.strip()
-                        input['default'] = map(float, vector.split(" "))
-            elif line.startswith("metadata"):
-                input = d['inputs'][-1]
-                input['meta'] = line
+                        currentElement['default'] = map(float, vector.split(" "))
+            if line.startswith("metadata"):
                 if "min = " in line:
-                    input['min'] = line.split(" ")[-1]
+                    currentElement['min'] = line.split(" ")[-1]
                 if "max = " in line:
-                    input['max'] = line.split(" ")[-1]
-            else:
-                input = {}
-                input['name'] = line.split(" ")[0].replace("\"", "")
-                input['type'] = line.split(" ")[1].replace("\"", "")
-                d['inputs'].append(input)
-                
-        print line
+                    currentElement['max'] = line.split(" ")[-1]
+                if "help = " in line:
+                    currentElement['help'] = " ".join(line.split("=")[1:]).replace("\"", "").strip()
+                if "mayaClassification = " in line:
+                    print "mayaClassification", " ".join(line.split("=")[1:]).replace("\"", "").strip()
+                    currentElement['mayaClassification'] = " ".join(line.split("=")[1:]).replace("\"", "").strip()
+                if "mayaId = " in line:
+                    print "Found maya id", int(line.split("=")[-1])
+                    currentElement['mayaId'] = int(line.split("=")[-1])
+            if line.startswith("\""): # found a parameter
+                currentElement = {}
+                currentElement['name'] = line.split(" ")[0].replace("\"", "")
+                currentElement['type'] = " ".join(line.split(" ")[1:]).replace("\"", "")
+                if "output" in line:
+                    d['outputs'].append(currentElement)
+                    currentElement = d['outputs'][-1]
+                else:
+                    d['inputs'].append(currentElement)
+                    currentElement = d['inputs'][-1]
     return d
 
+def readShadersXMLDescription():
+    if "MayaToCommon" in path.path(__file__):
+        xmlFile = path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderDefinitions.xml")
+    else:
+        xmlFile = path.path(__file__).parent / "resources/shaderDefinitions.xml"
+    if not xmlFile.exists():
+        log.error("No shader xml file: {0}".format(xmlFile))
+        return
+    tree = ET.parse(xmlFile)
+    shaders = tree.getroot()
+    shaderList = []
+    for shader in shaders:
+        shDict = {}
+        shDict['name'] = shader.find('name').text
+        shDict['classification'] = ""
+        shDict['mayaId'] = 0
+        shDict['help'] = ""
+        shDict['inputs'] = []
+        shDict['outputs'] = []
+        for inp in shader.find('inputs'):
+            inpp = {}
+            inpp['name'] = inp.find('name').text
+            inpp['type'] = inp.find('type').text
+            inpp['help'] = ""
+            inpp['min'] = 0
+            inpp['max'] = 1
+            inpp['default'] = 0
+            if inp.find('min'):
+                inpp['min'] = inp.find('min').text
+            if inp.find('max'):
+                inpp['max'] = inp.find('max').text
+            if inp.find('default'):
+                inpp['default'] = inp.find('default').text
+            shDict['inputs'].append(inpp)
+        for inp in shader.find('outputs'):
+            inpp = {}
+            inpp['name'] = inp.find('name').text
+            inpp['type'] = inp.find('type').text
+            inpp['help'] = ""
+            shDict['outputs'].append(inpp)
+        shaderList.append(shDict)
+    return shaderList
+
 def updateOSLShaderInfo(force=False, osoFiles=[]):
-    shaderInfoFile = path.path(__file__).parent / "shaders/shaderInfo.json"     
     pp = pprint.PrettyPrinter(indent=4)
-    
     IDLE_PRIORITY_CLASS = 64
     cmd = "oslinfo -v"
     infoDict = {}
@@ -163,7 +209,7 @@ def compileAllShaders(renderer = "appleseed"):
             log.info("Using found shaders directory {0}".format(shaderDir))
             
     include_dir = os.path.join(shaderDir, "src/include")
-    
+    log.info("reading shaders from {0}".format(shaderDir))
     oslc_cmd = "oslc"
     failureDict = {}
     osoInfoShaders = []
