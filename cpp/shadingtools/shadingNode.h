@@ -11,28 +11,21 @@
 struct ShaderAttribute
 {
 	ShaderAttribute()
-	{
-		connected = false;
-		connectedChildren = false;
-		connectedSourceChildren = false;
-	}
+	{}
 	enum AttributeType {
 		NONE=0,
 		MESSAGE,
 		FLOAT,
 		COLOR,
+		VECTOR,
 		STRING,
 		BOOL,
 		MATRIX
 	};
 	std::string name;
 	std::string type;
-	bool connected;
-	bool connectedChildren;
-	bool connectedSourceChildren;
-	std::string connectedAttrName;
-	std::string connectedNodeName;
-	MObject connectedMObject;
+	std::string hint;
+	AttributeType atype;
 };
 
 #define SPLUG_LIST std::vector<ShadingPlug>
@@ -40,16 +33,9 @@ struct ShaderAttribute
 class ShadingNode
 {
 public:
-	enum STATE{
-		NONE = 0,
-		INVALID = 1,
-		VALID =2
-	};
-
 	MString typeName; //Lambert, MultiplyDivide
 	MString fullName; //myLambert1, mdivi_number_123
 	MObject mobject;
-	STATE nodeState;
 	std::vector<ShaderAttribute> inputAttributes;
 	std::vector<ShaderAttribute> outputAttributes;
 
@@ -63,14 +49,20 @@ public:
 		return mobject == otherOne.mobject;
 	}
 
-
 	void setMObject(MObject object);
-	void init(void);
 	bool isAttributeValid(MString attributeName);
 	bool isInPlugValid(MPlug plug);
 	bool isOutPlugValid(MPlug plug);
 	void getConnectedInputObjects(MObjectArray& objectArray);
 	void getConnectedOutputObjects(MObjectArray& objectArray);
+	void addInputAttribute(ShaderAttribute att)
+	{
+		inputAttributes.push_back(att);
+	}
+	void addOutputAttribute(ShaderAttribute att)
+	{
+		outputAttributes.push_back(att);
+	}
 private:
 };
 

@@ -309,25 +309,23 @@ void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
 	std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
 	MStatus stat;
 
-	//if (node.hasFn(MFn::kShadingEngine))
-	//{
-	//	InteractiveElement iel;
-	//	iel.mobj = node;
-	//	iel.name = getObjectName(node);
-	//	iel.node = node;
-	//	mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()] = iel;
-
-	//	InteractiveElement *userData = &mayaScene->interactiveUpdateMap[mayaScene->interactiveUpdateMap.size()-1];
-	//	MCallbackId id = MNodeMessage::addNodeDirtyCallback(node, RenderQueueWorker::IPRNodeDirtyCallback, userData, &stat);
-	//	objIdMap[id] = node;
-	//	if (stat)
-	//		nodeCallbacks.push_back(id);
-	//}
-
-	// the rest should be shape nodes
-	if (!node.hasFn(MFn::kShape))
-		return;
-	
+	if (node.hasFn(MFn::kTransform))
+	{
+		MFnDagNode dagNode(node);
+		
+		MDagPath dagPath;
+		stat = dagNode.getPath(dagPath);
+		MString why = stat.errorString();
+		stat = dagPath.extendToShape();
+		MObject nn = dagPath.node();
+		MString na = dagPath.fullPathName();
+		if (!dagPath.node().hasFn(MFn::kMesh))
+			return;
+	}
+	else{
+		if (!node.hasFn(MFn::kShape))
+			return;
+	}
 	MFnDagNode dagNode(node);
 	MString p = dagNode.fullPathName();
 	MDagPath dagPath;
@@ -335,13 +333,14 @@ void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
 	dagPath.pop();
 	MObject transform = dagPath.node();
 	MString tname = getObjectName(transform);
+
+	// here the new object is added to the object list and is added to the interactive object list
 	mayaScene->parseSceneHierarchy(dagPath, 0, nullptr, nullptr);
 
+	// now we readd all interactive objects to the map
 	idInteractiveMap.clear();
-	
 	MCallbackId transformId = 0;
 	InteractiveElement *userData = nullptr;
-
 	std::map<uint, InteractiveElement>::reverse_iterator riter;
 	for (riter = mayaScene->interactiveUpdateMap.rbegin(); riter != mayaScene->interactiveUpdateMap.rend(); riter++)
 	{

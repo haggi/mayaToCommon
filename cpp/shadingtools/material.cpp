@@ -63,9 +63,8 @@ bool ShadingNetwork::hasValidShadingNodeConnections(ShadingNode& source, Shading
 
 void ShadingNetwork::parseNetwork(MObject& shaderNode)
 {
-	ShadingNode sn = findShadingNode(shaderNode);
-
-	if (sn.nodeState == ShadingNode::INVALID)
+	ShadingNode sn;
+	if (!ShaderDefinitions::findShadingNode(shaderNode, sn))
 	{
 		Logging::debug(MString("Node is not supported (INVALID): ") + getObjectName(shaderNode));
 		return;
@@ -88,10 +87,13 @@ void ShadingNetwork::parseNetwork(MObject& shaderNode)
 	{
 
 		MString connectedNode = getObjectName(connectedNodeList[i]);
-		ShadingNode source = findShadingNode(connectedNodeList[i]);
-		if (hasValidShadingNodeConnections(source, sn))
+		ShadingNode source;
+		if (ShaderDefinitions::findShadingNode(connectedNodeList[i], source))
 		{
-			parseNetwork(source.mobject);
+			if (hasValidShadingNodeConnections(source, sn))
+			{
+				parseNetwork(source.mobject);
+			}
 		}
 	}
 
@@ -115,8 +117,8 @@ void ShadingNetwork::checkNodeList(MObjectArray& mobjectArray)
 	MObjectArray cleanArray;
 	for (uint oId = 0; oId < mobjectArray.length(); oId++)
 	{
-		ShadingNode sn = findShadingNode(mobjectArray[oId]);
-		if (sn.nodeState == ShadingNode::VALID)
+		ShadingNode sn;
+		if(ShaderDefinitions::findShadingNode(mobjectArray[oId], sn))
 			cleanArray.append(mobjectArray[oId]);
 	}
 	mobjectArray = cleanArray;
@@ -127,8 +129,8 @@ void Material::checkNodeList(MObjectArray& nodeList)
 	MObjectArray cleanArray;
 	for( uint oId = 0; oId < nodeList.length(); oId++)
 	{
-		ShadingNode sn = findShadingNode(nodeList[oId]);
-		if( sn.nodeState == ShadingNode::VALID)
+		ShadingNode sn;
+		if (ShaderDefinitions::findShadingNode(nodeList[oId], sn))
 			cleanArray.append(nodeList[oId]);
 	}
 	nodeList = cleanArray;
@@ -138,9 +140,9 @@ void Material::checkNodeList(MObjectArray& nodeList)
 bool Material::alreadyDefined(ShadingNode& sn, ShadingNetwork& network)
 {
 	int occurences = 0;
-	for( int i = 0; i < (int)network.shaderList.size(); i++)
+	for( auto shader:network.shaderList)
 	{
-		if( network.shaderList[i].mobject == sn.mobject)
+		if( shader.mobject == sn.mobject)
 		{
 			occurences++;
 		}
@@ -188,13 +190,13 @@ bool Material::hasValidShadingNodeConnections(ShadingNode& source, ShadingNode& 
 
 void Material::parseNetwork(MObject& shaderNode, ShadingNetwork& network)
 {
-	ShadingNode sn = findShadingNode(shaderNode);
-
-	if( sn.nodeState == ShadingNode::INVALID)
+	ShadingNode sn;
+	if (!ShaderDefinitions::findShadingNode(shaderNode, sn))
 	{
 		Logging::debug(MString("Node is not supported (INVALID): ") + getObjectName(shaderNode));
 		return;
 	}
+
 
 	// to avoid any dg node cycles
 	if(alreadyDefined(sn, network))
@@ -213,10 +215,13 @@ void Material::parseNetwork(MObject& shaderNode, ShadingNetwork& network)
 	{
 
 		MString connectedNode = getObjectName(connectedNodeList[i]);
-		ShadingNode source = findShadingNode(connectedNodeList[i]);
-		if( hasValidShadingNodeConnections(source, sn))
+		ShadingNode source;
+		if (ShaderDefinitions::findShadingNode(connectedNodeList[i], source))
 		{
-			parseNetwork(source.mobject, network);
+			if (hasValidShadingNodeConnections(source, sn))
+			{
+				parseNetwork(source.mobject, network);
+			}
 		}
 	}
 

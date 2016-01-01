@@ -289,7 +289,15 @@ namespace MAYATO_OSLUTIL{
 			float multiplier = 1.0f;
 			if (stat)
 				multiplier = multiplierPlug.asFloat();
-			paramArray.push_back(MAYATO_OSL::OSLParameter(sa.name.c_str(), getVectorAttr(sa.name.c_str(), depFn) * multiplier));
+			MVector v;
+			if(sa.hint == "useAsColor")
+			{ 
+				MColor c = getColorAttr(sa.name.c_str(), depFn);
+				v = MVector(c.r, c.g, c.b);
+			}
+			else
+				v = getVectorAttr(sa.name.c_str(), depFn);
+			paramArray.push_back(MAYATO_OSL::OSLParameter(sa.name.c_str(), v * multiplier));
 		}
 		if (sa.type == "enumint")
 		{
@@ -338,11 +346,15 @@ namespace MAYATO_OSLUTIL{
 				continue;
 			MObject placementNode = pma[0].node();
 
-			ShadingNode pn = findShadingNode(placementNode);
+			ShadingNode pn;
+			if (!ShaderDefinitions::findShadingNode(placementNode, pn))
+				continue;
 			pn.fullName = pn.fullName + "_ProjUtil";
 			createOSLShadingNode(pn);
 
-			ShadingNode sn = findShadingNode(util.projectionNode);
+			ShadingNode sn;
+			if (!ShaderDefinitions::findShadingNode(placementNode, sn))
+				continue;
 			sn.fullName = sn.fullName + "_ProjUtil";
 			createOSLShadingNode(sn);
 
@@ -474,8 +486,8 @@ namespace MAYATO_OSLUTIL{
 			if (sourcePlug.isElement())
 				sourcePlug = sourcePlug.array();
 			MString sourcePlugName = getParamName(sourcePlug);
-			ShadingNode otherSideNode = findShadingNode(sourcePlug.node());
-			if (otherSideNode.mobject == MObject::kNullObj)
+			ShadingNode otherSideNode;
+			if (!ShaderDefinitions::findShadingNode(sourcePlug.node(), otherSideNode))
 				continue;
 			if (!otherSideNode.isOutPlugValid(sourcePlugs[pId]))
 				continue;

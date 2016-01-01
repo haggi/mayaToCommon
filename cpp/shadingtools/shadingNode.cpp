@@ -6,38 +6,32 @@
 
 static Logging logger;
 
-void ShadingNode::init(void)
-{
-	this->mobject = MObject::kNullObj;
-	this->nodeState = INVALID;
-	if( this->mobject != MObject::kNullObj)
-	{
-		this->typeName = getDepNodeTypeName(this->mobject);
-		this->fullName = getObjectName(this->mobject);	
-	}
-}
-
 ShadingNode::ShadingNode(const ShadingNode& other)
 {
 	this->mobject = other.mobject;
-	this->init();
 	*this = other;
+	if (this->mobject != MObject::kNullObj)
+	{
+		this->typeName = getDepNodeTypeName(this->mobject);
+		this->fullName = getObjectName(this->mobject);
+	}
 }
 
 ShadingNode::ShadingNode(MObject& mobj)
 {
 	this->mobject = mobj;
-	this->init();
+	if (this->mobject != MObject::kNullObj)
+	{
+		this->typeName = getDepNodeTypeName(this->mobject);
+		this->fullName = getObjectName(this->mobject);
+	}
 }
 
 ShadingNode::ShadingNode()
-{
-	this->init();
-}
+{}
 
 ShadingNode::~ShadingNode()
-{
-}
+{}
 
 void ShadingNode::setMObject(MObject mobj)
 {

@@ -6,7 +6,11 @@ import os
 import shutil
 import sys
 import xml.etree.cElementTree as ET
+import xml.dom.minidom as minidom
 #from test.badsyntax_future3 import result
+
+#global shader dictionary
+SHADER_DICT = {}
 
 log = logging.getLogger("renderLogger")
 
@@ -86,8 +90,7 @@ def getOSLFiles(renderer = "appleseed"):
 import pprint
 
 def analyzeContent(content):
-    print "Analyze Content"
-    r = content
+    print "Analyze Content", content
     d = {}
     currentElement = None
     for line in content:
@@ -109,7 +112,15 @@ def analyzeContent(content):
                         vector = line.split("[")[-1].split("]")[0]
                         vector = vector.strip()
                         currentElement['default'] = map(float, vector.split(" "))
+            if line.startswith("Unknown default value"):
+                if currentElement.has_key("type"):
+                    if currentElement["type"] in ["color", "vector"]:
+                        currentElement['default'] = "[ 0.0, 0.0, 0.0 ]"
             if line.startswith("metadata"):
+                if "options = " in line:
+                    currentElement['options'] = line.split(" ")[-1].replace("\"", "").split("|")
+                if "hint = " in line:
+                    currentElement['hint'] = line.split(" ")[-1].replace("\"", "")
                 if "min = " in line:
                     currentElement['min'] = line.split(" ")[-1]
                 if "max = " in line:
@@ -117,10 +128,10 @@ def analyzeContent(content):
                 if "help = " in line:
                     currentElement['help'] = " ".join(line.split("=")[1:]).replace("\"", "").strip()
                 if "mayaClassification = " in line:
-                    print "mayaClassification", " ".join(line.split("=")[1:]).replace("\"", "").strip()
+                    #print "mayaClassification", " ".join(line.split("=")[1:]).replace("\"", "").strip()
                     currentElement['mayaClassification'] = " ".join(line.split("=")[1:]).replace("\"", "").strip()
                 if "mayaId = " in line:
-                    print "Found maya id", int(line.split("=")[-1])
+                    #print "Found maya id", int(line.split("=")[-1])
                     currentElement['mayaId'] = int(line.split("=")[-1])
             if line.startswith("\""): # found a parameter
                 currentElement = {}
@@ -144,13 +155,24 @@ def readShadersXMLDescription():
         return
     tree = ET.parse(xmlFile)
     shaders = tree.getroot()
-    shaderList = []
+    log.debug("Reading shader info file: {0}".format(xmlFile))
+    #sys.stdout.write("Reading shader info file: {0}\n".format(xmlFile))
+    shaderDict = {}
     for shader in shaders:
         shDict = {}
         shDict['name'] = shader.find('name').text
-        shDict['classification'] = ""
+        shDict['mayaClassification'] = ""
+        element = shader.find('mayaClassification')
+        if element is not None:
+            shDict['mayaClassification'] = element.text
         shDict['mayaId'] = 0
+        element = shader.find('mayaId')
+        if element is not None:
+            shDict['mayaId'] = int(element.text)
         shDict['help'] = ""
+        element = shader.find('help')
+        if element is not None:
+            shDict['help'] = element.text
         shDict['inputs'] = []
         shDict['outputs'] = []
         for inp in shader.find('inputs'):
@@ -158,33 +180,99 @@ def readShadersXMLDescription():
             inpp['name'] = inp.find('name').text
             inpp['type'] = inp.find('type').text
             inpp['help'] = ""
+            inpp['hint'] = ""
             inpp['min'] = 0
             inpp['max'] = 1
             inpp['default'] = 0
-            if inp.find('min'):
+            findElement = inp.find('help')
+            if findElement is not None:
+                inpp['help'] = findElement.text
+            findElement = inp.find('hint')
+            if findElement is not None:
+                inpp['hint'] = inp.find('hint').text
+            findElement = inp.find('min')
+            if findElement is not None:
                 inpp['min'] = inp.find('min').text
-            if inp.find('max'):
+            findElement = inp.find('max')
+            if findElement is not None:
                 inpp['max'] = inp.find('max').text
-            if inp.find('default'):
+            findElement = inp.find('default')
+            if findElement is not None:
                 inpp['default'] = inp.find('default').text
+            findElement = inp.find('options')
+            if findElement is not None:
+                inpp['options'] = findElement.text
             shDict['inputs'].append(inpp)
+            
         for inp in shader.find('outputs'):
             inpp = {}
             inpp['name'] = inp.find('name').text
             inpp['type'] = inp.find('type').text
             inpp['help'] = ""
             shDict['outputs'].append(inpp)
-        shaderList.append(shDict)
-    return shaderList
+        shaderDict[shDict['name']] = shDict
+    
+    global SHADER_DICT
+    SHADER_DICT = shaderDict   
+    return shaderDict
 
+def addSubElementList(listEntry, parentElement, subName = "input"):
+    for element in listEntry:
+        inElement = ET.SubElement(parentElement,subName)
+        for ikey, ivalue in element.iteritems():
+            subElement = ET.SubElement(inElement,ikey)
+            subElement.text = str(ivalue)                    
+
+def writeXMLShaderDescription(shaderDict=None):
+    global SHADER_DICT
+    if shaderDict is None:
+        shaderDict = SHADER_DICT
+    xmlFile = None
+    if "MayaToCommon" in path.path(__file__):
+        xmlFile = path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderDefinitions.xml")
+    else:
+        xmlFile = path.path(__file__).parent / "resources/shaderDefinitions.xml"
+    if not xmlFile.exists():
+        log.error("No shader xml file: {0}".format(xmlFile))
+        return
+    root = ET.Element('shaders')
+    for shaderKey in shaderDict.keys():
+        shader = shaderDict[shaderKey]
+        sh = ET.SubElement(root,"shader")
+        for key, value in shader.iteritems():
+            if key == "inputs":
+                ins = ET.SubElement(sh,"inputs")   
+                addSubElementList(value, ins, subName="input")     
+            elif key == "outputs":
+                ins = ET.SubElement(sh,"outputs")   
+                addSubElementList(value, ins, subName="output")              
+            else:
+                subElement = ET.SubElement(sh,key)
+                subElement.text = str(value)
+    tree = ET.ElementTree(root)
+    tree.write(xmlFile)
+    log.debug("Writing shader info file: {0}".format(xmlFile))
+    # just make it nice to read
+    xml = minidom.parse(xmlFile)
+    pretty_xml_as_string = xml.toprettyxml()    
+    root = ET.fromstring(pretty_xml_as_string)
+    tree = ET.ElementTree(root)
+    tree.write(xmlFile)    
+    
+    
 def updateOSLShaderInfo(force=False, osoFiles=[]):
     pp = pprint.PrettyPrinter(indent=4)
     IDLE_PRIORITY_CLASS = 64
     cmd = "oslinfo -v"
     infoDict = {}
+    # if we have updates we need to update the xml file as well.
+    # first read the xml file
+    readShadersXMLDescription()
+    global SHADER_DICT    
     for osoFile in osoFiles:        
         infoCmd = cmd + " " + osoFile
-        log.info("Info cmd: {0}".format(infoCmd))
+        shaderName = path.path(osoFile).basename().replace(".oso", "")
+        log.info("Updating shader info for shader {1}. cmd: {0}".format(infoCmd, shaderName))
         process = subprocess.Popen(infoCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)               
         content = []
         while 1:
@@ -192,12 +280,14 @@ def updateOSLShaderInfo(force=False, osoFiles=[]):
             line = line.strip()
             content.append(line)
             if not line: break
-        
-        infoDict[osoFile.split("/")[-1]] = analyzeContent(content)
-    pp.pprint(infoDict)   
+        infoDict[shaderName] = analyzeContent(content)
+        SHADER_DICT[shaderName] = infoDict[shaderName]
+        #pp.pprint(infoDict)
+    writeXMLShaderDescription()
+    return infoDict
+
     
 def compileAllShaders(renderer = "appleseed"):
-
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:

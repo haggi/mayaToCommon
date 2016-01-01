@@ -11,20 +11,13 @@ class ShadingNode;
 class ShaderDefinitions
 {
 public:
-	std::vector<ShadingNode> shadingNodes;
-	bool readDone;
+	static std::vector<ShadingNode> shadingNodes;
+	static bool readDone;
 
 	ShaderDefinitions();
 	~ShaderDefinitions();
-	void readShaderDefinitions();
-	bool validString(std::string& line);
-	void printShaderDefs();
-	ShadingNode findShadingNode(MObject mobject);
-	ShadingNode findShadingNode(MString typeName);
-private:
+	static void readShaderDefinitions();
+	static bool findShadingNode(MObject mobject, ShadingNode& snode);
+	static bool findShadingNode(MString typeName, ShadingNode& snode);
 };
-
-ShadingNode findShadingNode(MObject mobject);
-ShadingNode findShadingNode(MString typeName);
-
 #endif
