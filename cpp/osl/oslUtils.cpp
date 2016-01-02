@@ -197,62 +197,71 @@ namespace MAYATO_OSLUTIL{
 
 		if (sa.type == "string")
 		{
-			MString stringParameter = getString(sa.name.c_str(), depFn);
-			if (sa.name == "fileTextureName")
+			// in OSL we don't have option menus, they are defined in our definition by string metadatas
+			if (sa.optionMenu)
 			{
-				// to support udim textures we check if we have a file texture node here.
-				// if so, we take the fileTextureName and seperate base, ext.
-				if (depFn.object().hasFn(MFn::kFileTexture))
-				{
-					std::string fileName(getString("fileTextureName", depFn).asChar());
-					int uvTilingMode = getIntAttr("uvTilingMode", depFn, 0);
-					if (uvTilingMode > 3)
-					{
-						Logging::error(MString("Uv Mode is not supported. Only ZBrush(1), Mudbox(2) and Mari(3) are supported."));
-						uvTilingMode = 0;
-					}
-
-					// we search for the base name. All patterns start with a '<' character, everything before is our base.
-					std::string fileNameWithTokens(getString("computedFileTextureNamePattern", depFn).asChar());
-					std::string baseFileName = fileName;
-					size_t pos = fileNameWithTokens.find("<");
-					if (pos == std::string::npos)
-						uvTilingMode = 0;
-					else{
-						baseFileName = fileNameWithTokens.substr(0, pos - 1);
-						if (uvTilingMode == 3)
-							baseFileName = fileNameWithTokens.substr(0, pos);
-						//Logging::debug(MString("Base fileName is: ") + baseFileName.c_str());
-						paramArray.push_back(MAYATO_OSL::OSLParameter("baseName", baseFileName));
-					}
-					pos = fileName.rfind(".");
-					std::string ext = "";
-					if (pos == std::string::npos)
-					{
-						Logging::error(MString("Could not find a extension in file texture: ") + fileName.c_str());
-					}
-					else{
-						ext = fileName.substr(pos + 1);
-						Logging::debug(MString("Extension for file texture: ") + fileName.c_str() + " is " + ext.c_str());
-						//if (ext == "exr")
-						//{
-						std::string txFileName = fileName + ".exr.tx";
-						std::tr2::sys::path p = std::tr2::sys::path(txFileName);
-						if (std::tr2::sys::exists(p))
-						{
-							Logging::debug(MString("texture file has a .exr.tx extension, using ") + txFileName.c_str() + " instead of original one");
-							ext = ext + ".exr.tx";
-							if (uvTilingMode == 0)
-								stringParameter = txFileName.c_str();
-						}
-						//}
-						paramArray.push_back(MAYATO_OSL::OSLParameter("ext", ext));
-					}
-
-					paramArray.push_back(MAYATO_OSL::OSLParameter("uvTilingMode", uvTilingMode));
-				}
+				//int v = getEnumInt(sa.name.c_str(), depFn);
+				MString v = getEnumString(sa.name.c_str(), depFn);
+				paramArray.push_back(MAYATO_OSL::OSLParameter(sa.name.c_str(), v));
 			}
-			paramArray.push_back(MAYATO_OSL::OSLParameter(sa.name.c_str(), stringParameter));
+			else{
+				MString stringParameter = getString(sa.name.c_str(), depFn);
+				if (sa.name == "fileTextureName")
+				{
+					// to support udim textures we check if we have a file texture node here.
+					// if so, we take the fileTextureName and seperate base, ext.
+					if (depFn.object().hasFn(MFn::kFileTexture))
+					{
+						std::string fileName(getString("fileTextureName", depFn).asChar());
+						int uvTilingMode = getIntAttr("uvTilingMode", depFn, 0);
+						if (uvTilingMode > 3)
+						{
+							Logging::error(MString("Uv Mode is not supported. Only ZBrush(1), Mudbox(2) and Mari(3) are supported."));
+							uvTilingMode = 0;
+						}
+
+						// we search for the base name. All patterns start with a '<' character, everything before is our base.
+						std::string fileNameWithTokens(getString("computedFileTextureNamePattern", depFn).asChar());
+						std::string baseFileName = fileName;
+						size_t pos = fileNameWithTokens.find("<");
+						if (pos == std::string::npos)
+							uvTilingMode = 0;
+						else{
+							baseFileName = fileNameWithTokens.substr(0, pos - 1);
+							if (uvTilingMode == 3)
+								baseFileName = fileNameWithTokens.substr(0, pos);
+							//Logging::debug(MString("Base fileName is: ") + baseFileName.c_str());
+							paramArray.push_back(MAYATO_OSL::OSLParameter("baseName", baseFileName));
+						}
+						pos = fileName.rfind(".");
+						std::string ext = "";
+						if (pos == std::string::npos)
+						{
+							Logging::error(MString("Could not find a extension in file texture: ") + fileName.c_str());
+						}
+						else{
+							ext = fileName.substr(pos + 1);
+							Logging::debug(MString("Extension for file texture: ") + fileName.c_str() + " is " + ext.c_str());
+							//if (ext == "exr")
+							//{
+							std::string txFileName = fileName + ".exr.tx";
+							std::tr2::sys::path p = std::tr2::sys::path(txFileName);
+							if (std::tr2::sys::exists(p))
+							{
+								Logging::debug(MString("texture file has a .exr.tx extension, using ") + txFileName.c_str() + " instead of original one");
+								ext = ext + ".exr.tx";
+								if (uvTilingMode == 0)
+									stringParameter = txFileName.c_str();
+							}
+							//}
+							paramArray.push_back(MAYATO_OSL::OSLParameter("ext", ext));
+						}
+
+						paramArray.push_back(MAYATO_OSL::OSLParameter("uvTilingMode", uvTilingMode));
+					}
+				}
+				paramArray.push_back(MAYATO_OSL::OSLParameter(sa.name.c_str(), stringParameter));
+			}
 		}
 		if (sa.type == "float")
 		{

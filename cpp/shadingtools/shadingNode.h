@@ -25,6 +25,7 @@ struct ShaderAttribute
 	std::string name;
 	std::string type;
 	std::string hint;
+	bool optionMenu = false;
 	AttributeType atype;
 };
 

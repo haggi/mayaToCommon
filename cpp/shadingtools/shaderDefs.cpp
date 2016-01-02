@@ -58,6 +58,11 @@ void ShaderDefinitions::readShaderDefinitions()
 				att.hint = pystring::replace(att.hint, "\"", "");
 				att.hint = pystring::replace(att.hint, " ", "");
 			}
+			int options = input.second.count("options");
+			if (options > 0)
+			{
+				att.optionMenu = true;
+			}
 			snode.addInputAttribute(att);
 			//if (input.second.count("min") > 0)
 			//{

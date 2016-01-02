@@ -884,10 +884,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 			break;
 		
 		case EventQueue::Event::PRETILE:
-			if (MayaTo::getWorldPtr()->worldScenePtr->renderType == MayaScene::IPR)
-			{
-				RenderQueueWorker::updateRenderView(e);
-			}
+			RenderQueueWorker::updateRenderView(e);
 			break;
 
 		case EventQueue::Event::IPRUPDATESCENE:
