@@ -429,16 +429,67 @@ namespace MAYATO_OSLUTIL{
 			}
 			return result;
 		}
+
+		// mayas bump2d node is terrible. It is no problem if you want to use a default bump.
+		// but as soon as you want to use a normalMap, you have to find out the other node and connect it correctly by yourself.
+		if (attributeName == "bumpValue")
+		{
+			if (depFn.typeName() == "bump2d")
+			{
+				bool result;
+				int bumpType = getEnumInt("bumpInterp", depFn);
+				// bumpType 0 == default texture bump, type 1 == tangentBased normal, type 2 == object based normal map
+				if (bumpType > 0)
+				{
+					MPlug normalMap = depFn.findPlug("normalMap", true);
+					// what I try to do is to find the source node and find something like outColor which we can connect to our normalMap attribute
+					MObject inNode = getConnectedInNode(depFn.object(), "bumpDepth");
+					if (inNode != MObject::kNullObj)
+					{
+						Logging::debug(MString("Found connection to bump Node: ") + getObjectName(inNode) + " trying to find a color output");
+						MFnDependencyNode inDepFn(inNode);
+						MStatus stat;
+						MPlug outColor = inDepFn.findPlug("outColor", true, &stat);
+						if (!outColor.isNull())
+						{
+							Logging::debug(MString("Found outColor plug: ") + outColor.name());
+							sourcePlugs.append(outColor);
+							destPlugs.append(normalMap);
+							return true;
+						}						
+					}
+					return result;
+				}
+				else{
+				}
+			}
+		}
+
 		return false;
 	}
 	// check if the attribute is okay.
 	// check if it is connected and if the source attribute is okay and supported
 	bool OSLUtilClass::getConnectedPlugs(MString attributeName, MFnDependencyNode& depFn, MPlugArray& sourcePlugs, MPlugArray& destPlugs)
 	{
-		const char *specialPlugs[] = {"colorEntryList"};
+		std::vector<MString>  specialPlugs;
+		specialPlugs.push_back("colorEntryList");
+
+		// the bumpValue is a special case because it can be both a normal attribute or a special attribute
+		if (attributeName == "bumpValue")
+		{
+			if (depFn.typeName() == "bump2d")
+			{
+				bool result;
+				int bumpType = getEnumInt("bumpInterp", depFn);
+				if (bumpType > 0)
+				{
+					specialPlugs.push_back("bumpValue");
+				}
+			}
+		}
 		for (auto specialPlug : specialPlugs)
 		{
-			if (attributeName == MString(specialPlug))
+			if (attributeName == specialPlug)
 			{
 				return handleSpecialPlugs(attributeName, depFn, sourcePlugs, destPlugs);
 			}

@@ -288,6 +288,7 @@ def updateOSLShaderInfo(force=False, osoFiles=[]):
 
     
 def compileAllShaders(renderer = "appleseed"):
+    print "cas"
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
@@ -303,7 +304,6 @@ def compileAllShaders(renderer = "appleseed"):
     oslc_cmd = "oslc"
     failureDict = {}
     osoInfoShaders = []
-    
     for root, dirname, files in os.walk(shaderDir):
         for filename in files:
             if filename.endswith(".osl"):
