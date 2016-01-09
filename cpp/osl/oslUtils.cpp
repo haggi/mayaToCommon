@@ -464,7 +464,6 @@ namespace MAYATO_OSLUTIL{
 				}
 			}
 		}
-
 		return false;
 	}
 	// check if the attribute is okay.
