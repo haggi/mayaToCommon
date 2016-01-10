@@ -19,5 +19,6 @@ public:
 	static void readShaderDefinitions();
 	static bool findShadingNode(MObject mobject, ShadingNode& snode);
 	static bool findShadingNode(MString typeName, ShadingNode& snode);
+	static bool shadingNodeSupported(MString typeName);
 };
 #endif

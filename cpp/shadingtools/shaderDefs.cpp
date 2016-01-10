@@ -124,3 +124,10 @@ bool ShaderDefinitions::findShadingNode(MString nodeTypeName, ShadingNode& snode
 	}
 	return false;
 }
+
+
+bool ShaderDefinitions::shadingNodeSupported(MString typeName)
+{
+	ShadingNode snode;
+	return (findShadingNode(typeName, snode));
+}
