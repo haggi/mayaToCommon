@@ -698,12 +698,12 @@ void RenderQueueWorker::startRenderQueueWorker()
 				// Here we create the overall scene, renderer and renderGlobals objects
 				MayaTo::getWorldPtr()->initializeRenderEnvironment();
 						
-				RenderProcess::doPreRenderJobs();
 				MayaTo::getWorldPtr()->worldRenderGlobalsPtr->setWidthHeight(e.cmdArgsData->width, e.cmdArgsData->height);
 				MayaTo::getWorldPtr()->worldRenderGlobalsPtr->setUseRenderRegion(e.cmdArgsData->useRenderRegion);
 				MayaTo::getWorldPtr()->worldScenePtr->uiCamera = e.cmdArgsData->cameraDagPath;
-				MayaTo::getWorldPtr()->worldRendererPtr->initializeRenderer();
-				//renderDone = false;
+				MayaTo::getWorldPtr()->worldRendererPtr->initializeRenderer(); // init renderer with all type, image size etc.
+				RenderProcess::doPreRenderJobs();
+
 				int width, height;
 				MayaTo::getWorldPtr()->worldRenderGlobalsPtr->getWidthHeight(width, height);
 				if (MRenderView::doesRenderEditorExist())
@@ -751,9 +751,10 @@ void RenderQueueWorker::startRenderQueueWorker()
 				if (!MayaTo::getWorldPtr()->worldRenderGlobalsPtr->frameListDone())
 				{ 
 					MayaTo::getWorldPtr()->worldRenderGlobalsPtr->updateFrameNumber();
-					RenderProcess::doPreFrameJobs();
-					RenderProcess::doPrepareFrame();
-					RenderQueueWorker::sceneThread = std::thread(RenderQueueWorker::renderProcessThread);					
+					RenderProcess::doPreFrameJobs(); // preRenderScript etc.
+					RenderProcess::doPrepareFrame(); // parse scene and update objects
+					RenderProcess::doRenderPreFrameJobs(); // call renderers pre frame jobs
+					RenderQueueWorker::sceneThread = std::thread(RenderQueueWorker::renderProcessThread);
 				}
 				else{
 					e.type = EventQueue::Event::RENDERDONE;

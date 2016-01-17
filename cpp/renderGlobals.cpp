@@ -367,8 +367,7 @@ bool RenderGlobals::getDefaultGlobals()
 	this->startFrame = (float)(tv.value());
 	tv = data.frameEnd;
 	this->endFrame = (float)(tv.value());
-	tv = data.frameBy;
-	this->byFrame = (float)(tv.value());
+	this->byFrame = data.frameBy;
 
 	// check if we are in a batch render mode or if we are rendering from UI
 	if( MGlobal::mayaState() == MGlobal::kBatch )
@@ -376,7 +375,7 @@ bool RenderGlobals::getDefaultGlobals()
 		this->inBatch = true;
 		if( data.isAnimated() )
 		{
-			Logging::debug(MString("animation on, rendering frame sequence from ") + this->startFrame + " to " + this->endFrame);
+			Logging::debug(MString("animation on, rendering frame sequence from ") + this->startFrame + " to " + this->endFrame + " by " + this->byFrame);
 			// these are the frames that are supposed to be rendered in batch mode
 			this->doAnimation = true;
 			for( double frame = this->startFrame; frame <= this->endFrame; frame += this->byFrame)

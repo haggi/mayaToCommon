@@ -46,6 +46,8 @@ namespace MayaTo{
 		// make an interactive update of the scene. Before this call the interactiveUpdateList should be filled appropriatly
 		virtual void doInteractiveUpdate() = 0;
 		virtual void handleUserEvent(int event, MString strData, float floatData, int intData) = 0;
+		virtual void preFrame(){};
+		virtual void postFrame(){};
 	private:
 
 	};

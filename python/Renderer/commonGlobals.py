@@ -252,7 +252,7 @@ class OpenMayaCommonGlobals(object):
                     with pm.columnLayout(adjustableColumn=True, width=400):
                         self.addRenderDefaultGlobalsUIElement(attName='startFrame', uiType='float', displayName='Start Frame:', uiDict=uiDict)
                         self.addRenderDefaultGlobalsUIElement(attName='endFrame', uiType='float', displayName='End Frame:', uiDict=uiDict)
-                        self.addRenderDefaultGlobalsUIElement(attName='byFrame', uiType='float', displayName='By Frame:', uiDict=uiDict)
+                        self.addRenderDefaultGlobalsUIElement(attName='byFrameStep', uiType='float', displayName='By Frame:', uiDict=uiDict)
 
                 with pm.frameLayout(label="Renderable Cameras", collapsable=True, collapse=False) as uiDict['camerasFrame']:
                     self.createCamerasUI(uiDict)

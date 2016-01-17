@@ -4,6 +4,7 @@
 namespace RenderProcess{
 	void doPreRenderJobs();
 	void doPreFrameJobs();
+	void doRenderPreFrameJobs();
 	void doPostFrameJobs();
 	void doPostRenderJobs();
 	void doFrameJobs();
