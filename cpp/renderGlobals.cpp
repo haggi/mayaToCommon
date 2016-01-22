@@ -8,9 +8,9 @@
 #include <maya/MFnCamera.h>
 #include <list>
 
-#include "renderGlobals.h"
+#include "renderglobals.h"
 #include "utilities/logging.h"
-#include "utilities/attrTools.h"
+#include "utilities/attrtools.h"
 #include "utilities/tools.h"
 #include "utilities/pystring.h"
 

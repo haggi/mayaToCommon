@@ -1,4 +1,4 @@
-#include "swatchRendererInterface.h"
+#include "swatchrendererinterface.h"
 
 class SwatchRendererInterface;
 

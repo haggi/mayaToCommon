@@ -1,4 +1,4 @@
-#include "swatchRenderer.h"
+#include "swatchrenderer.h"
 #include <maya/MImage.h>
 #include <maya/MGlobal.h>
 #include <assert.h>
@@ -8,7 +8,7 @@
 
 #include "utilities/tools.h"
 #include "utilities/logging.h"
-#include "swatchRendererInterfaceFactory.h"
+#include "swatchrendererinterfacefactory.h"
 #include "../world.h"
 
 MSwatchRenderBase* SwatchRenderer::creator(MObject dependNode, MObject renderNode, int imageResolution)

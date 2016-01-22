@@ -1,4 +1,4 @@
-#include "mayaScene.h"
+#include "mayascene.h"
 #include <maya/MDagPath.h>
 #include <maya/MItDag.h>
 #include <maya/MFnDagNode.h>
@@ -17,7 +17,7 @@
 #include <maya/MVectorArray.h>
 #include <maya/MFileIO.h>
 #include "world.h"
-#include "mayaObjectFactory.h"
+#include "mayaobjectfactory.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "utilities/pystring.h"

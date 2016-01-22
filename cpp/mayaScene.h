@@ -10,10 +10,10 @@
 #include <vector>
 #include <memory>
 
-#include "renderGlobals.h"
-#include "mayaObject.h"
+#include "renderglobals.h"
+#include "mayaobject.h"
 
-#include "utilities/MiniMap.h"
+#include "utilities/minimap.h"
 
 struct InteractiveElement{
 	std::shared_ptr<MayaObject> obj;

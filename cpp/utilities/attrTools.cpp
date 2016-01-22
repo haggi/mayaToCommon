@@ -7,7 +7,7 @@
 #include <maya/MFnMatrixData.h>
 #include <maya/MAngle.h>
 
-#include "attrTools.h"
+#include "attrtools.h"
 
 float getDegree(const char* plugName, MFnDependencyNode& dn)
 {

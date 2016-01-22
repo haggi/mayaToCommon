@@ -1,7 +1,7 @@
 
-#include "dummyScene.h"
+#include "dummyscene.h"
 #include "utilities/logging.h"
-#include "../threads/renderQueueWorker.h"
+#include "../threads/renderqueueworker.h"
 
 static Logging logger;
 

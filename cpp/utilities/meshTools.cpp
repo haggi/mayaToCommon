@@ -1,4 +1,4 @@
-#include "meshTools.h"
+#include "meshtools.h"
 
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnMesh.h>
@@ -10,7 +10,7 @@
 #include <maya/MFnMeshData.h>
 
 #include "utilities/tools.h"
-#include "utilities/attrTools.h"
+#include "utilities/attrtools.h"
 #include "utilities/logging.h"
 
 void getMeshData(MObject& meshObject, MPointArray& points, MFloatVectorArray& normals)

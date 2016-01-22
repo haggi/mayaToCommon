@@ -2,10 +2,10 @@
 #include <thread>
 #include <maya/MSceneMessage.h>
 #include <maya/MGlobal.h>
-#include "mayaSceneFactory.h"
-#include "renderGlobalsFactory.h"
-#include "rendering/rendererFactory.h"
-#include "threads/renderQueueWorker.h"
+#include "mayascenefactory.h"
+#include "renderglobalsfactory.h"
+#include "rendering/rendererfactory.h"
+#include "threads/renderqueueworker.h"
 #include "utilities/logging.h"
 
 static MCallbackId timerCallbackId = 0;

@@ -1,6 +1,6 @@
 import pymel.core as pm
 import logging
-import uiUtils
+import uiutils
 
 log = logging.getLogger("renderLogger")
 

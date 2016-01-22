@@ -28,11 +28,11 @@
 #include <maya/MFloatVector.h>
 #include <maya/MFnDependencyNode.h>
 #include <vector>
-#include "OSL/oslexec.h"
+#include "osl/oslexec.h"
 #include "boost/variant.hpp"
 #include "math.h"
 
-#include "../shadingtools/shadingNode.h"
+#include "../shadingtools/shadingnode.h"
 #include "../utilities/tools.h"
 
 #define ARRAY_MAX_ENTRIES 10

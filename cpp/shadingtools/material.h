@@ -108,7 +108,7 @@
 #include <maya/MIntArray.h>
 
 #include <vector>
-#include "shadingNode.h"
+#include "shadingnode.h"
 
 #define SNODE_LIST std::vector<ShadingNode>
 

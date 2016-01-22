@@ -1,4 +1,4 @@
-#include "shadingUtils.h"
+#include "shadingutils.h"
 
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnParticleSystem.h>

@@ -19,13 +19,13 @@
 #include <maya/MFnSingleIndexedComponent.h>
 #include <maya/MFnComponent.h>
 
-#include "mayaScene.h"
+#include "mayascene.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "utilities/attrTools.h"
+#include "utilities/attrtools.h"
 #include "utilities/pystring.h"
-#include "shadingtools/shadingUtils.h"
-#include "threads/renderQueueWorker.h"
+#include "shadingtools/shadingutils.h"
+#include "threads/renderqueueworker.h"
 #include "rendering/renderer.h"
 #include "world.h"
 

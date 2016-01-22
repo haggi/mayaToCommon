@@ -7,7 +7,7 @@
 #include <maya/MGlobal.h>
 #include <maya/MFnPluginData.h>
 #include <maya/MPlug.h>
-#include "renderGlobalsNode.h"
+#include "renderglobalsnode.h"
 
 	// sampling adaptive
 MObject MayaRenderGlobalsNode::adaptiveSampling;

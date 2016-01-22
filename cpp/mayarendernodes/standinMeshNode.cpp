@@ -1,4 +1,4 @@
-#include "standinMeshNode.h"
+#include "standinmeshnode.h"
 
 #include <maya/MTime.h>
 #include <maya/MFnMesh.h>

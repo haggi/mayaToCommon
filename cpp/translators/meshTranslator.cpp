@@ -1,6 +1,6 @@
-#include "meshTranslator.h"
-#include "maya/MFnMesh.h"
-#include "maya/MItMeshPolygon.h"
+#include "meshtranslator.h"
+#include "maya/mfnmesh.h"
+#include "maya/mitmeshpolygon.h"
 #include "utilities/logging.h"
 
 static Logging logger;

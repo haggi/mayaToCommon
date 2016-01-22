@@ -1,11 +1,11 @@
-#include "renderProcess.h"
+#include "renderprocess.h"
 #include <maya/MGlobal.h>
 #include <maya/MRenderView.h>
 #include "world.h"
-#include "renderGlobals.h"
-#include "mayaScene.h"
+#include "renderglobals.h"
+#include "mayascene.h"
 #include "utilities/logging.h"
-#include "threads/renderQueueWorker.h"
+#include "threads/renderqueueworker.h"
 
 namespace RenderProcess{
 

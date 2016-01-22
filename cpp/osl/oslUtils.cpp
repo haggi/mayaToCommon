@@ -1,13 +1,13 @@
 #include <filesystem>
-#include "oslUtils.h"
+#include "oslutils.h"
 #include <maya/MPlugArray.h>
 #include <maya/MFnDependencyNode.h>
-#include "renderGlobals.h"
+#include "renderglobals.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "utilities/attrTools.h"
+#include "utilities/attrtools.h"
 #include "utilities/pystring.h"
-#include "shadingtools/shaderDefs.h"
+#include "shadingtools/shaderdefs.h"
 #include "world.h"
 
 static Logging logger;

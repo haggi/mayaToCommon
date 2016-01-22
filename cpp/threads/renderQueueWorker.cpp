@@ -13,16 +13,16 @@
 #include <maya/MFnDagNode.h>
 #include <maya/MFnMesh.h>
 
-#include "Compute.h"
-#include "renderQueueWorker.h"
+#include "compute.h"
+#include "renderqueueworker.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "mayaSceneFactory.h"
-#include "memory/memoryInfo.h"
-#include "../dummyRenderer/dummyScene.h"
-#include "../mayaScene.h"
+#include "mayascenefactory.h"
+#include "memory/memoryinfo.h"
+#include "../dummyrenderer/dummyscene.h"
+#include "../mayascene.h"
 #include "../world.h"
-#include "../renderProcess.h"
+#include "../renderprocess.h"
 
 //static 
 std::thread RenderQueueWorker::sceneThread;

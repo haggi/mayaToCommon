@@ -1,4 +1,4 @@
-#include "mayaScene.h"
+#include "mayascene.h"
 #include <maya/MGlobal.h>
 #include <maya/MFileIO.h>
 #include <maya/MDagPath.h>
@@ -7,7 +7,7 @@
 #include <maya/MFnDependencyNode.h>
 #include "utilities/pystring.h"
 #include "utilities/logging.h"
-#include "utilities/attrTools.h"
+#include "utilities/attrtools.h"
 #include "utilities/tools.h"
 #include "world.h"
 

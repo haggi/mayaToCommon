@@ -1,5 +1,5 @@
-#include "mayaSceneFactory.h"
-#include "mayaScene.h"
+#include "mayascenefactory.h"
+#include "mayascene.h"
 #include "world.h"
 #include <memory>
 

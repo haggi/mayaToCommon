@@ -10,7 +10,7 @@
 #include <maya/MFnAttribute.h>
 
 #include "utilities/tools.h"
-#include "utilities/attrTools.h"
+#include "utilities/attrtools.h"
 #include "utilities/pystring.h"
 
 bool isCameraRenderable(MObject obj)

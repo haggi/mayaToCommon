@@ -5,13 +5,13 @@
 #include <maya/MItMeshPolygon.h>
 #include <maya/MFnMeshData.h>
 
-#include "mayaObject.h"
+#include "mayaobject.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
-#include "utilities/attrTools.h"
-#include "shadingtools/shadingUtils.h"
+#include "utilities/attrtools.h"
+#include "shadingtools/shadingutils.h"
 #include "world.h"
-#include "renderGlobals.h"
+#include "renderglobals.h"
 
 static Logging logger;
 

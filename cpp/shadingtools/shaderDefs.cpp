@@ -1,8 +1,8 @@
 /*
 */
 
-#include "shadingNode.h"
-#include "shaderDefs.h"
+#include "shadingnode.h"
+#include "shaderdefs.h"
 #include "utilities/logging.h"
 #include "utilities/tools.h"
 #include "utilities/pystring.h"

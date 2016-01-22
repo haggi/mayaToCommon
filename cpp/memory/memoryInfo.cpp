@@ -1,4 +1,4 @@
-#include "memoryInfo.h"
+#include "memoryinfo.h"
 
 
 #include "windows.h"

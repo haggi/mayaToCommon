@@ -1,6 +1,6 @@
 #include "world.h"
-#include "renderGlobalsFactory.h"
-#include "renderGlobals.h"
+#include "renderglobalsfactory.h"
+#include "renderglobals.h"
 
 namespace MayaTo
 {

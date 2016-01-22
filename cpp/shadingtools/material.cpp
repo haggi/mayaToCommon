@@ -6,11 +6,11 @@
 #include <maya/MItMeshPolygon.h>
 
 #include "material.h"
-#include "utilities/attrTools.h"
+#include "utilities/attrtools.h"
 #include "utilities/tools.h"
 #include "utilities/logging.h"
 #include "utilities/pystring.h"
-#include "shadingTools/shaderDefs.h"
+#include "shadingtools/shaderdefs.h"
 
 static Logging logger;
 ShadingNetwork::ShadingNetwork(MObject& node) : rootNode(node)

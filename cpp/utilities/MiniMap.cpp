@@ -1,3 +1,3 @@
-#include "MiniMap.h"
+#include "minimap.h"
 
 

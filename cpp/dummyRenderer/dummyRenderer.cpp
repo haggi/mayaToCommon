@@ -1,4 +1,4 @@
-#include "dummyRenderer.h"
+#include "dummyrenderer.h"
 #include "memory.h"
 #include "utilities/logging.h"
 

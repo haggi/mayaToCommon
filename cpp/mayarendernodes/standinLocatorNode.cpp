@@ -1,4 +1,4 @@
-#include "standinLocatorNode.h"
+#include "standinlocatornode.h"
 
 //#include <maya/MFnStringData.h>
 //#include <maya/MFnDependencyNode.h>

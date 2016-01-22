@@ -1,6 +1,6 @@
 #include "threads/queue.h"
 #include "utilities/logging.h"
-#include "memory/memoryInfo.h"
+#include "memory/memoryinfo.h"
 #include <maya/MGlobal.h>
 #include <stdio.h>
 #include <thread>

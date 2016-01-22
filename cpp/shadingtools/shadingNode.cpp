@@ -1,5 +1,5 @@
 #include <maya/MPlugArray.h>
-#include "shadingNode.h"
+#include "shadingnode.h"
 #include "utilities/tools.h"
 #include "utilities/pystring.h"
 #include "utilities/logging.h"
