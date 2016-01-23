@@ -140,9 +140,11 @@ void Material::checkNodeList(MObjectArray& nodeList)
 bool Material::alreadyDefined(ShadingNode& sn, ShadingNetwork& network)
 {
 	int occurences = 0;
-	for( auto shader:network.shaderList)
+	std::vector<ShadingNode>::iterator it;
+	std::vector<ShadingNode> shaders = network.shaderList;
+	for (it = shaders.begin(); it != shaders.end(); it++)
 	{
-		if( shader.mobject == sn.mobject)
+		if( it->mobject == sn.mobject)
 		{
 			occurences++;
 		}
@@ -242,16 +244,20 @@ void Material::printNodes(ShadingNetwork& network)
 void Material::cleanNetwork(ShadingNetwork& network)
 {
 	ShadingNodeList cleanList;
-	for (auto sn : network.shaderList)
+	std::vector<ShadingNode>::iterator it;
+	std::vector<ShadingNode> shaders = network.shaderList;
+	for (it = shaders.begin(); it != shaders.end(); it++)
 	{
 		bool found = false;
-		for (auto cn : cleanList)
+		std::vector<ShadingNode>::iterator cit;
+		std::vector<ShadingNode> cshaders = cleanList;
+		for (cit = cshaders.begin(); cit != cshaders.end(); cit++)
 		{
-			if (cn == sn)
+			if (*cit == *it)
 				found = true;
 		}
 		if (!found)
-			cleanList.push_back(sn);
+			cleanList.push_back(*it);
 	}
 	network.shaderList = cleanList;
 }

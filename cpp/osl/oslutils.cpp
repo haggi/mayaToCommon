@@ -55,9 +55,13 @@ namespace MAYATO_OSLUTIL{
 		else
 			nodes = definedOSLNodes;
 
-		for (auto node : nodes)
-			if (node == oslNode)
+		std::vector<MString>::iterator it;
+		std::vector<MString> nodesList = nodes;
+		for (it = nodesList.begin(); it != nodesList.end(); it++)
+		{
+			if (*it == oslNode)
 				return true;
+		}
 		return false;
 	}
 
@@ -340,9 +344,13 @@ namespace MAYATO_OSLUTIL{
 	void OSLUtilClass::createOSLProjectionNodes(MObject& surfaceShaderNode)
 	{
 		listProjectionHistory(surfaceShaderNode);
-		
-		for (auto util : projectionNodeArray)
+
+
+		std::vector<MAYATO_OSL::ProjectionUtil>::iterator it;
+		std::vector<MAYATO_OSL::ProjectionUtil> utils = projectionNodeArray;
+		for (it = utils.begin(); it != utils.end(); it++)
 		{
+			MAYATO_OSL::ProjectionUtil util = *it;
 			if ((util.leafNodes.length() == 0) || (util.projectionNode == MObject::kNullObj))
 				continue;
 
@@ -486,9 +494,11 @@ namespace MAYATO_OSLUTIL{
 				}
 			}
 		}
-		for (auto specialPlug : specialPlugs)
+		std::vector<MString>::iterator it;
+		std::vector<MString> nodesList = specialPlugs;
+		for (it = nodesList.begin(); it != nodesList.end(); it++)
 		{
-			if (attributeName == specialPlug)
+			if (attributeName == *it)
 			{
 				return handleSpecialPlugs(attributeName, depFn, sourcePlugs, destPlugs);
 			}
@@ -733,8 +743,10 @@ namespace MAYATO_OSLUTIL{
 	void OSLUtilClass::addNodeToList(MAYATO_OSL::OSLNodeStruct node)
 	{
 		bool found = false;
-		for (auto n : this->oslNodeArray)
-			if (n.nodeName == node.nodeName)
+		std::vector<MAYATO_OSL::OSLNodeStruct>::iterator it;
+		std::vector<MAYATO_OSL::OSLNodeStruct> nodesList = oslNodeArray;
+		for (it = nodesList.begin(); it != nodesList.end(); it++)
+			if (it->nodeName == node.nodeName)
 				found = true;
 		if (!found)
 		{
@@ -748,9 +760,11 @@ namespace MAYATO_OSLUTIL{
 
 	void OSLUtilClass::addConnectionToList(MAYATO_OSL::Connection c)
 	{
-		for (auto conn : connectionList)
+		std::vector<MAYATO_OSL::Connection>::iterator it;
+		std::vector<MAYATO_OSL::Connection> conns = connectionList;
+		for (it = conns.begin(); it != conns.end(); it++)
 		{
-			if (conn == c)
+			if (*it == c)
 				return;
 		}
 		connectionList.push_back(c);
@@ -772,14 +786,21 @@ namespace MAYATO_OSLUTIL{
 	{
 		MStringArray sa;
 		std::vector<MAYATO_OSL::OSLNodeStruct> cleanNodeArray;
-		for (auto node : oslNodeArray)
+
+		std::vector<MAYATO_OSL::OSLNodeStruct>::iterator it;
+		std::vector<MAYATO_OSL::OSLNodeStruct> nodesList = oslNodeArray;
+		for (it = nodesList.begin(); it != nodesList.end(); it++)
 		{
+			MAYATO_OSL::OSLNodeStruct node = *it;
 			if (pystring::startswith(node.nodeName.asChar(), "in_") || pystring::startswith(node.nodeName.asChar(), "out_"))
 				continue;
 			MString inNodePattern = MString("in_") + node.nodeName;
 			MString outNodePattern = MString("out_") + node.nodeName;
-			for (auto helperNode : oslNodeArray)
+			std::vector<MAYATO_OSL::OSLNodeStruct>::iterator hit;
+			std::vector<MAYATO_OSL::OSLNodeStruct> hnodesList = oslNodeArray;
+			for (hit = hnodesList.begin(); hit != hnodesList.end(); hit++)
 			{
+				MAYATO_OSL::OSLNodeStruct helperNode = *hit;
 				if (!pystring::startswith(helperNode.nodeName.asChar(), "in_"))
 					continue;
 				if (pystring::startswith(helperNode.nodeName.asChar(), inNodePattern.asChar()))
@@ -788,8 +809,10 @@ namespace MAYATO_OSLUTIL{
 				}
 			}
 			cleanNodeArray.push_back(node);
-			for (auto helperNode : oslNodeArray)
+
+			for (hit = hnodesList.begin(); hit != hnodesList.end(); hit++)
 			{
+				MAYATO_OSL::OSLNodeStruct helperNode = *hit;
 				if (!pystring::startswith(helperNode.nodeName.asChar(), "out_"))
 					continue;
 				if (pystring::startswith(helperNode.nodeName.asChar(), outNodePattern.asChar()))
@@ -803,14 +826,20 @@ namespace MAYATO_OSLUTIL{
 
 	void OSLUtilClass::createAndConnectShaderNodes()
 	{
-		for (auto node : oslNodeArray)
+		std::vector<MAYATO_OSL::OSLNodeStruct>::iterator it;
+		std::vector<MAYATO_OSL::OSLNodeStruct> nodesList = oslNodeArray;
+		for (it = nodesList.begin(); it != nodesList.end(); it++)
 		{
+			MAYATO_OSL::OSLNodeStruct node = *it;
 			Logging::debug(MString("NEW: Creating shading node: ") + node.nodeName + " type: " + node.typeName);
 			createOSLShader(node.typeName, node.nodeName, node.paramArray);
 		}
-		for (auto conn:connectionList)
+
+		std::vector<MAYATO_OSL::Connection>::iterator cit;
+		std::vector<MAYATO_OSL::Connection> conns = connectionList;
+		for (cit = conns.begin(); cit != conns.end(); cit++)
 		{
-			Logging::debug(MString("NEW: Creating connection from: ") + conn.sourceNode + "." + conn.sourceAttribute + " --> " + conn.destNode + "." + conn.destAttribute);
+			Logging::debug(MString("NEW: Creating connection from: ") + cit->sourceNode + "." + cit->sourceAttribute + " --> " + cit->destNode + "." + cit->destAttribute);
 		}
 		connectOSLShaders(connectionList);
 	}

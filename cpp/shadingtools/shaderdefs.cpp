@@ -97,8 +97,12 @@ bool ShaderDefinitions::findShadingNode(MObject node, ShadingNode& snode)
 		ShaderDefinitions::readShaderDefinitions();
 
 	MString nodeTypeName = getDepNodeTypeName(node);
-	for (auto sn : ShaderDefinitions::shadingNodes)
+	std::vector<ShadingNode>::iterator it;
+	std::vector<ShadingNode> nodes = ShaderDefinitions::shadingNodes;
+
+	for (it = nodes.begin(); it != nodes.end(); it++)
 	{
+		ShadingNode sn = *it;
 		if (sn.typeName == nodeTypeName)
 		{
 			snode = sn;
@@ -114,8 +118,11 @@ bool ShaderDefinitions::findShadingNode(MString nodeTypeName, ShadingNode& snode
 	if (!ShaderDefinitions::readDone)
 		ShaderDefinitions::readShaderDefinitions();
 
-	for (auto sn : ShaderDefinitions::shadingNodes)
+	std::vector<ShadingNode>::iterator it;
+	std::vector<ShadingNode> nodes = ShaderDefinitions::shadingNodes;
+	for (it = nodes.begin(); it != nodes.end(); it++)
 	{
+		ShadingNode sn = *it;
 		if (sn.typeName == nodeTypeName)
 		{
 			snode = sn;
