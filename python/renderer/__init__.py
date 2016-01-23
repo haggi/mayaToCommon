@@ -3,9 +3,9 @@ import os
 import logging
 import path
 import pymel.core as pm
-import uiUtils
-import commonGlobals
-import commonGlobalsMel
+import uiutils as uiUtils
+import commonglobals as commonGlobals
+import commonglobalsmel as commonGlobalsMel
 
 log = logging.getLogger("renderLogger")
 

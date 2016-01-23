@@ -147,9 +147,9 @@ def analyzeContent(content):
 
 def readShadersXMLDescription():
     if "MayaToCommon" in path.path(__file__):
-        xmlFile = path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderDefinitions.xml")
+        xmlFile = path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderdefinitions.xml")
     else:
-        xmlFile = path.path(__file__).parent / "resources/shaderDefinitions.xml"
+        xmlFile = path.path(__file__).parent / "resources/shaderdefinitions.xml"
     if not xmlFile.exists():
         log.error("No shader xml file: {0}".format(xmlFile))
         return
@@ -229,9 +229,9 @@ def writeXMLShaderDescription(shaderDict=None):
         shaderDict = SHADER_DICT
     xmlFile = None
     if "MayaToCommon" in path.path(__file__):
-        xmlFile = path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderDefinitions.xml")
+        xmlFile = path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderdefinitions.xml")
     else:
-        xmlFile = path.path(__file__).parent / "resources/shaderDefinitions.xml"
+        xmlFile = path.path(__file__).parent / "resources/shaderdefinitions.xml"
     if not xmlFile.exists():
         log.error("No shader xml file: {0}".format(xmlFile))
         return
