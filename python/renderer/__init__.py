@@ -3,9 +3,9 @@ import os
 import logging
 import path
 import pymel.core as pm
-import uiUtils
-import commonGlobals
-import commonGlobalsMel
+import uiutils as uiUtils
+import commonglobals as commonGlobals
+import commonglobalsmel as commonGlobalsMel
 
 log = logging.getLogger("renderLogger")
 
@@ -399,7 +399,7 @@ global proc updateMayaImageFormatControl()
             
         pm.renderer(self.rendererName, edit=True, renderRegionProcedure="mayaRenderRegion")
 
-        scriptDir = appleseed.path.path(__file__).dirname().parent
+        scriptDir = path.path(__file__).dirname().parent
         #os.environ['MAYA_SCRIPT_PATH'] = "{0};{1}".format(scriptDir, os.environ['MAYA_SCRIPT_PATH'])
         pm.mel.source('createMayaSoftwareCommonGlobalsTab')
         pm.mel.source("unifiedRenderGlobalsWindow")
