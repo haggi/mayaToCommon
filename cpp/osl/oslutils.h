@@ -2,14 +2,14 @@
 #define MT_OSL_UTILS_H
 
 /*
-	OSL and maya projection nodes have a problem. 
+	OSL and maya projection nodes have a problem.
 	A projection node normally works this way:
 		- Calculate the projection of a point
 		- Calculate the new uv's
 		- Get the image based on these new uv's
 	In OSL this is not possible. Modifying the uv's and evaluate
 	an image based on these new uv's is not possible, the uv's have to
-	be manipulated before they are read by the projection node what is a cycle, 
+	be manipulated before they are read by the projection node what is a cycle,
 	because the projection node itself calculates the uvs....
 	My solution is to split the projection node into the color part and the projection part.
 	The projection part has to be connected to the very first node in the chain, normally a place2dnode.
@@ -28,7 +28,7 @@
 #include <maya/MFloatVector.h>
 #include <maya/MFnDependencyNode.h>
 #include <vector>
-#include "osl/oslexec.h"
+#include "OSL/oslexec.h"
 #include "boost/variant.hpp"
 #include "math.h"
 
@@ -42,7 +42,7 @@ namespace OSL{
 }
 
 namespace MAYATO_OSL{
-	
+
 	static std::vector<MString> DefinedOSLNodes;
 	static std::vector<MString> DefinedOSLSWNodes;
 
@@ -305,4 +305,3 @@ namespace MAYATO_OSLUTIL{
 
 }
 #endif
-
