@@ -4,7 +4,7 @@ class TestCase(object):
     def __init__(self, renderer):
         self.renderer = renderer.lower()
         self.baseDir = "H:/UserDatenHaggi/Documents/coding/OpenMaya/src"
-        self.testDir = appleseed.path.path("{0}/mayaTo{1}/testsuite".format(self.baseDir, renderer.capitalize()))
+        self.testDir = path.path("{0}/mayaTo{1}/testsuite".format(self.baseDir, renderer.capitalize()))
         
         self.testList = self.testDir.listdir()
     

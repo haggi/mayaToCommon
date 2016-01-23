@@ -325,7 +325,7 @@ def attributeCreator(renderer, shortCut):
 
     basePath = None
     if os.name == 'nt':
-        basePath = appleseed.path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaTo" + renderer.capitalize())
+        basePath = path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaTo" + renderer.capitalize())
     else:
         pass
     if not basePath:

@@ -62,18 +62,18 @@ def createDeployment(renderer, shortCut, mayaRelease):
     
     projectName = "mayaTo{0}".format(renderer.capitalize())
     if os.name == 'nt':
-        basePath = appleseed.path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/{0}".format(projectName))
+        basePath = path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/{0}".format(projectName))
     else:
         print "Os not supported"
         return
     
-    sourceDir = appleseed.path.path(basePath + "/" +  shortCut + "_devmodule")
-    devDestDir = appleseed.path.path("{0}/deployment/{1}_{2}".format(basePath, projectName, mayaRelease))
+    sourceDir = path.path(basePath + "/" +  shortCut + "_devmodule")
+    devDestDir = path.path("{0}/deployment/{1}_{2}".format(basePath, projectName, mayaRelease))
     if devDestDir.exists():
         print "removing old {0} dir".format(devDestDir)
         shutil.rmtree(devDestDir)
 
-    deploymentDir =  appleseed.path.path("{0}/deployment".format(basePath))
+    deploymentDir =  path.path("{0}/deployment".format(basePath))
     # dev destination directories                
     try:
         print "Creating destination directory", devDestDir
@@ -111,18 +111,18 @@ def createDeployment(renderer, shortCut, mayaRelease):
         shutil.copy(xmlFile, devDestDir + "/plug-ins/")
     
     #ressources
-    scDir = appleseed.path.path(sourceDir + "/ressources")
+    scDir = path.path(sourceDir + "/ressources")
     shutil.copytree(scDir, devDestDir + "/ressources")
     
     manuapPdf = None
     #bin
     if renderer == "appleseed":
-        dkDir = appleseed.path.path(sourceDir.parent + "/devkit/appleseed_devkit_win64/bin/Release")
+        dkDir = path.path(sourceDir.parent + "/devkit/appleseed_devkit_win64/bin/Release")
         for f in dkDir.listdir():
             shutil.copy(f, devDestDir + "/bin")
 
     
-    manualPdf = appleseed.path.path("C:/daten/web/openmaya/manuals/{0}/{0}.pdf".format(projectName))
+    manualPdf = path.path("C:/daten/web/openmaya/manuals/{0}/{0}.pdf".format(projectName))
     if renderer == "corona":
         binDir = sourceDir + "/bin"
         destBinDir = devDestDir + "/bin/"
@@ -161,7 +161,7 @@ def createDeployment(renderer, shortCut, mayaRelease):
     shutil.copytree(iconsSourceDir, iconsDestDir)
 
     #common python scripts
-    scDir = appleseed.path.path(sourceDir.parent.parent + "/common/python/")
+    scDir = path.path(sourceDir.parent.parent + "/common/python/")
     shutil.copytree(scDir, devDestDir + "/scripts/")
     scDir = devDestDir + "/scripts/"
     files = scDir.listdir(".*")
@@ -170,7 +170,7 @@ def createDeployment(renderer, shortCut, mayaRelease):
             f.rmtree()
         else:
             f.remove()
-    scDir = appleseed.path.path(scDir + "Renderer")
+    scDir = path.path(scDir + "Renderer")
     files = scDir.listdir("*.pyc")
     for f in files:
         f.remove()
@@ -183,7 +183,7 @@ def createDeployment(renderer, shortCut, mayaRelease):
     #renderer python scripts
     for root, dirs, files in os.walk(sourceDir + "/scripts/"):
             for file in files:
-                ff = appleseed.path.path(os.path.join(root, file))
+                ff = path.path(os.path.join(root, file))
                 if ff.endswith(".pyc"):
                     continue
                 if file.startswith("."):
@@ -192,7 +192,7 @@ def createDeployment(renderer, shortCut, mayaRelease):
                 print "copy", ff, "to", dst
                 shutil.copy(ff, dst)
             for d in dirs:
-                dd = appleseed.path.path(os.path.join(root, d))
+                dd = path.path(os.path.join(root, d))
                 dst = dd.replace(sourceDir, devDestDir)
                 print "mkdir", dst
                 os.makedirs(dst)
@@ -212,18 +212,18 @@ def createDeploymentCombined(renderer, shortCut):
     
     projectName = "mayaTo{0}".format(renderer.capitalize())
     if os.name == 'nt':
-        basePath = appleseed.path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/{0}".format(projectName))
+        basePath = path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/{0}".format(projectName))
     else:
         print "Os not supported"
         return
     
-    sourceDir = appleseed.path.path(basePath + "/" +  shortCut + "_devmodule")
-    devDestDir = appleseed.path.path("{0}/deployment/{1}".format(basePath, projectName))
+    sourceDir = path.path(basePath + "/" +  shortCut + "_devmodule")
+    devDestDir = path.path("{0}/deployment/{1}".format(basePath, projectName))
     if devDestDir.exists():
         print "removing old {0} dir".format(devDestDir)
         shutil.rmtree(devDestDir)
 
-    deploymentDir =  appleseed.path.path("{0}/deployment".format(basePath))
+    deploymentDir =  path.path("{0}/deployment".format(basePath))
     # dev destination directories                
     try:
         print "Creating destination directory", devDestDir
@@ -236,7 +236,7 @@ def createDeploymentCombined(renderer, shortCut):
         mayaVersionSubPlugInDir = "{deploymentDir}/{mayaVersion}/plug-ins".format(deploymentDir=devDestDir, mayaVersion=mayaVersionName)
         print "Creating version depenedent directory", mayaVersionSubPlugInDir
         os.makedirs(mayaVersionSubPlugInDir)
-        pluginFile = appleseed.path.path(sourceDir + "/" +  mayaVersionName + "/plug-ins/mayaTo" + renderer.capitalize() + ".mll")
+        pluginFile = path.path(sourceDir + "/" +  mayaVersionName + "/plug-ins/mayaTo" + renderer.capitalize() + ".mll")
         pluginDestFile = mayaVersionSubPlugInDir + "/mayaTo" + renderer.capitalize() + ".mll"
         shutil.copy2(pluginFile, pluginDestFile)
     # get folders from dev module
@@ -258,7 +258,7 @@ def createDeploymentCombined(renderer, shortCut):
 
     
     #mll
-    pluginsDir = appleseed.path.path(sourceDir + "/plug-ins/")
+    pluginsDir = path.path(sourceDir + "/plug-ins/")
     xmlFiles = pluginsDir.listdir("*.xml")    
     for destMayaVersion in ["2014", "2015", "2016"]:
         plugInDestDir = devDestDir + "/" + destMayaVersion + "/plug-ins"
@@ -267,18 +267,18 @@ def createDeploymentCombined(renderer, shortCut):
             shutil.copy(xmlFile, plugInDestDir)
             
     #ressources
-    scDir = appleseed.path.path(sourceDir + "/resources")
+    scDir = path.path(sourceDir + "/resources")
     shutil.copytree(scDir, devDestDir + "/resources")
     
     manuapPdf = None
     #bin
     if renderer == "appleseed":
-        dkDir = appleseed.path.path(sourceDir.parent + "/devkit/appleseed_devkit_win64/bin/Release")
+        dkDir = path.path(sourceDir.parent + "/devkit/appleseed_devkit_win64/bin/Release")
         for f in dkDir.listdir():
             shutil.copy(f, devDestDir + "/bin")
 
     
-    manualPdf = appleseed.path.path("C:/daten/web/openmaya/manuals/{0}/{0}.pdf".format(projectName))
+    manualPdf = path.path("C:/daten/web/openmaya/manuals/{0}/{0}.pdf".format(projectName))
     if renderer == "corona":
         binDir = sourceDir + "/bin"
         destBinDir = devDestDir + "/bin/"
@@ -317,7 +317,7 @@ def createDeploymentCombined(renderer, shortCut):
     shutil.copytree(iconsSourceDir, iconsDestDir)
 
     #common python scripts
-    scDir = appleseed.path.path(sourceDir.parent.parent + "/common/python/")
+    scDir = path.path(sourceDir.parent.parent + "/common/python/")
     shutil.copytree(scDir, devDestDir + "/scripts/")
     scDir = devDestDir + "/scripts/"
     files = scDir.listdir(".*")
@@ -326,7 +326,7 @@ def createDeploymentCombined(renderer, shortCut):
             f.rmtree()
         else:
             f.remove()
-    scDir = appleseed.path.path(scDir + "Renderer")
+    scDir = path.path(scDir + "Renderer")
     files = scDir.listdir("*.pyc")
     for f in files:
         f.remove()
@@ -334,7 +334,7 @@ def createDeploymentCombined(renderer, shortCut):
     #renderer python scripts
     for root, dirs, files in os.walk(sourceDir + "/scripts/"):
             for file in files:
-                ff = appleseed.path.path(os.path.join(root, file))
+                ff = path.path(os.path.join(root, file))
                 if ff.endswith(".pyc"):
                     continue
                 if file.startswith("."):
@@ -343,7 +343,7 @@ def createDeploymentCombined(renderer, shortCut):
                 print "copy", ff, "to", dst
                 shutil.copy(ff, dst)
             for d in dirs:
-                dd = appleseed.path.path(os.path.join(root, d))
+                dd = path.path(os.path.join(root, d))
                 dst = dd.replace(sourceDir, devDestDir)
                 print "mkdir", dst
                 os.makedirs(dst)

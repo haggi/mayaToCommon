@@ -29,7 +29,7 @@ CODINGROOT = "H:/userDatenHaggi/documents/coding/"
 def aeTemplateCreator(attDict, renderer, shortCut):
     
     sourceAEFile = baseSourcePath + "/mt@_devmodule/scripts/@/AETemplate/AE@shaderTemplate.py"
-    destAEPath = appleseed.path.path(baseDestPath + "/mt@_devmodule/scripts/@/AETemplate/".replace("mt@_", shortCut + "_").replace("@", renderer.capitalize()))
+    destAEPath = path.path(baseDestPath + "/mt@_devmodule/scripts/@/AETemplate/".replace("mt@_", shortCut + "_").replace("@", renderer.capitalize()))
     
     print "Sourcefile", sourceAEFile
     print "Destpath", destAEPath
@@ -49,7 +49,7 @@ def aeTemplateCreator(attDict, renderer, shortCut):
         newContent = []
         
         aeFileName = "AE" + renderer.lower() + key.capitalize() + "Template.py"
-        destAEFile = appleseed.path.path(destAEPath + aeFileName)
+        destAEFile = path.path(destAEPath + aeFileName)
         #print "create AE for", key, destAEFile
         if destAEFile.exists():
             continue
@@ -179,15 +179,15 @@ class TextureCreator(object):
     def __init__(self, startId, name, shortcut):
         self.pluginStartId = startId
         self.rendererName = name
-        self.codingRoot = appleseed.path.path(__file__).parent.parent.parent.parent
+        self.codingRoot = path.path(__file__).parent.parent.parent.parent
         self.rendererCodingRoot = self.codingRoot + "/mayaTo" + self.rendererName.capitalize() + "/src"
         self.capitalName = self.rendererName.capitalize()
         self.shortCut = shortcut
-        self.baseDestination = appleseed.path.path("{0}/mayaTo{1}".format(self.codingRoot , self.capitalName))
+        self.baseDestination = path.path("{0}/mayaTo{1}".format(self.codingRoot , self.capitalName))
         self.mayaToBaseTexH = "{0}/mayaToBase/src/shaders/textureBase.h".format(self.codingRoot )
         self.mayaToBaseTexCPP = "{0}/mayaToBase/src/shaders/textureBase.cpp".format(self.codingRoot )
-        self.rendererMatDefs = appleseed.path.path("{0}/mayaTo{1}/vs2010/sourceCodeDocs/textures.txt".format(self.codingRoot , self.capitalName))
-        self.destinationDir = appleseed.path.path("{0}/mayaTo{1}/src/textures".format(self.codingRoot , self.capitalName))
+        self.rendererMatDefs = path.path("{0}/mayaTo{1}/vs2010/sourceCodeDocs/textures.txt".format(self.codingRoot , self.capitalName))
+        self.destinationDir = path.path("{0}/mayaTo{1}/src/textures".format(self.codingRoot , self.capitalName))
         self.nodesToCreate = []
         self.texFileContent = None
         self.textureFileHandle = None
@@ -221,7 +221,7 @@ class TextureCreator(object):
         fh.close()
         
         for node in self.nodesToCreate:
-            destAEPath = appleseed.path.path(self.baseDestination + "/{0}_devmodule/scripts/{1}/AETemplate/AE{1}{2}Template.py".format(self.shortCut, self.rendererName.capitalize(), node.name.capitalize()))
+            destAEPath = path.path(self.baseDestination + "/{0}_devmodule/scripts/{1}/AETemplate/AE{1}{2}Template.py".format(self.shortCut, self.rendererName.capitalize(), node.name.capitalize()))
             content = sourceContent
             newContent = []
             if destAEPath.exists():

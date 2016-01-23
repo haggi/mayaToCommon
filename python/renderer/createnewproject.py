@@ -5,7 +5,7 @@ import logging
 
 log = logging
 
-BASE_DIR=appleseed.path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaToBase")
+BASE_DIR=path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaToBase")
 
 def replaceStringInFile(fileName, rendererName, shortCut):    
     print "replaceStringInFile", fileName
@@ -50,7 +50,7 @@ def createNewProject(rendererName=None, shortCut=None):
     
     sourceDirBase = BASE_DIR
     
-    destDirBase = appleseed.path.path("{destdir}/mayaTo{renderer}".format(destdir=BASE_DIR.parent, renderer=rendererName.capitalize()))
+    destDirBase = path.path("{destdir}/mayaTo{renderer}".format(destdir=BASE_DIR.parent, renderer=rendererName.capitalize()))
     
     def recursiveFiles(directory, tab = ""):
         files = directory.listdir()
@@ -60,7 +60,7 @@ def createNewProject(rendererName=None, shortCut=None):
             print tab + "Checking File:", f
             destElement = f.replace(sourceDirBase, destDirBase)
             destElement = replaceString(destElement, rendererName, shortCut)
-            destElement = appleseed.path.path(destElement)
+            destElement = path.path(destElement)
             if f.isfile():
                 if not destElement.exists():
                     print tab + "Copy file", f, "to", destElement

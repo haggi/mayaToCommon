@@ -268,7 +268,7 @@ def getPType(att):
 def attrIncludeCreator(attDict, renderer, shortCut):
     global baseDestPath
     
-    destAEPath = appleseed.path.path(baseDestPath + "/src/{0}/{0}ShaderInclude.h".format(renderer.capitalize()))
+    destAEPath = path.path(baseDestPath + "/src/{0}/{0}ShaderInclude.h".format(renderer.capitalize()))
     fh = open(destAEPath, "r")
     content = fh.readlines()
     fh.close()
@@ -365,7 +365,7 @@ def aeTemplateCreator(attDict, renderer, shortCut):
     global baseDestPath
     
     sourceAEFile = baseSourcePath + "/mt@_devmodule/scripts/@/AETemplate/AE@shaderTemplate.py"
-    destAEPath = appleseed.path.path(baseDestPath + "/mt@_devmodule/scripts/@/AETemplate/".replace("mt@_", shortCut + "_").replace("@", renderer.capitalize()))
+    destAEPath = path.path(baseDestPath + "/mt@_devmodule/scripts/@/AETemplate/".replace("mt@_", shortCut + "_").replace("@", renderer.capitalize()))
     
     print "Sourcefile", sourceAEFile
     print "Destpath", destAEPath
@@ -383,7 +383,7 @@ def aeTemplateCreator(attDict, renderer, shortCut):
         newContent = []
         
         aeFileName = "AE" + key + "Template.py"
-        destAEFile = appleseed.path.path(destAEPath + aeFileName)
+        destAEFile = path.path(destAEPath + aeFileName)
         #print "create AE for", key, destAEFile
         if destAEFile.exists():
             continue
@@ -438,14 +438,14 @@ def fillNodes(attDict):
     for key in attDict.keys():
         if key == "all":
             continue
-        destFileNameH = appleseed.path.path(baseDestPath + "/src/shaders/" + key + "Material.h")
+        destFileNameH = path.path(baseDestPath + "/src/shaders/" + key + "Material.h")
         sourceFileNameH = baseSourcePath + "/src/shaders/materialBase.h"
-        destFileNameC = appleseed.path.path(baseDestPath + "/src/shaders/" + key + "Material.cpp")
+        destFileNameC = path.path(baseDestPath + "/src/shaders/" + key + "Material.cpp")
         sourceFileNameC = baseSourcePath + "/src/shaders/materialBase.cpp"
         
-        destFileNameO = appleseed.path.path(baseDestPath + "/src/shaders/" + key + "MaterialOverride.cpp")
+        destFileNameO = path.path(baseDestPath + "/src/shaders/" + key + "MaterialOverride.cpp")
         sourceFileNameO = baseSourcePath + "/src/shaders/materialBaseOverride.cpp"
-        destFileNameOH = appleseed.path.path(baseDestPath + "/src/shaders/" + key + "MaterialOverride.h")
+        destFileNameOH = path.path(baseDestPath + "/src/shaders/" + key + "MaterialOverride.h")
         sourceFileNameOH = baseSourcePath + "/src/shaders/materialBaseOverride.h"
 
         if not destFileNameOH.exists():
@@ -523,7 +523,7 @@ def pyRGCreator(pypath, attArray):
                 print "self.addRenderGlobalsUIElement(attName = '{0}', uiType = '{1}', displayName = '{2}', default='{3}', uiDict=uiDict)\n".format(att[0],att[1],att[2],att[3])
 
 def createShaderDefinitionFile(attDict, renderer, shortcut, append):
-    destDefPath = appleseed.path.path(r"{2}OpenMaya\src\mayaTo{0}\{1}_devmodule\ressources\ShaderDefinitions.txt".format(renderer, shortcut, CODINGROOT))
+    destDefPath = path.path(r"{2}OpenMaya\src\mayaTo{0}\{1}_devmodule\ressources\ShaderDefinitions.txt".format(renderer, shortcut, CODINGROOT))
     fh = open(destDefPath, "r")
     content = fh.readlines()
     fh.close()
@@ -587,8 +587,8 @@ def shaderCreator(renderer, shortCut, mtype):
     global baseDestPath
     
     if os.name == 'nt':
-        baseDestPath = appleseed.path.path(CODINGROOT + "OpenMaya/src/mayaTo" + renderer.capitalize())
-        baseSourcePath = appleseed.path.path(CODINGROOT + "OpenMaya/src/mayaToBase")
+        baseDestPath = path.path(CODINGROOT + "OpenMaya/src/mayaTo" + renderer.capitalize())
+        baseSourcePath = path.path(CODINGROOT + "OpenMaya/src/mayaToBase")
     else:
         pass
             

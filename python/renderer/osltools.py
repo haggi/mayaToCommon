@@ -15,11 +15,11 @@ SHADER_DICT = {}
 log = logging.getLogger("renderLogger")
 
 def compileOSLShaders(renderer="Corona"):
-    oslShaderPath = appleseed.path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaTo{0}/mt{1}_devmodule/shaders".format(renderer, renderer[:2].lower()))
+    oslShaderPath = path.path("H:/UserDatenHaggi/Documents/coding/OpenMaya/src/mayaTo{0}/mt{1}_devmodule/shaders".format(renderer, renderer[:2].lower()))
     oslShadersToCompile = []
     for p in oslShaderPath.listdir("*.osl"):
-        oslFile = appleseed.path.path(p)
-        osoFile = appleseed.path.path(p[:-3] + "oso")
+        oslFile = path.path(p)
+        osoFile = path.path(p[:-3] + "oso")
         if osoFile.exists():
             if osoFile.mtime < oslFile.mtime:
                 osoFile.remove()
@@ -50,7 +50,7 @@ def getOSODirs(renderer = "appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
-        shaderDir = appleseed.path.path(__file__).parent() + "/shaders"
+        shaderDir = path.path(__file__).parent() + "/shaders"
         print "Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir."
     osoDirs = set()
     for root, dirname, files in os.walk(shaderDir):
@@ -63,7 +63,7 @@ def getOSOFiles(renderer = "appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
-        shaderDir = appleseed.path.path(__file__).parent() + "/shaders"
+        shaderDir = path.path(__file__).parent() + "/shaders"
         print "Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir."
 
     osoFiles = set()
@@ -77,7 +77,7 @@ def getOSLFiles(renderer = "appleseed"):
     try:
         shaderDir = os.environ['{0}_OSL_SHADERS_LOCATION'.format(renderer.upper())]
     except KeyError:
-        shaderDir = appleseed.path.path(__file__).parent() + "/shaders"
+        shaderDir = path.path(__file__).parent() + "/shaders"
         print "Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir."
 
     osoFiles = set()
@@ -146,10 +146,10 @@ def analyzeContent(content):
     return d
 
 def readShadersXMLDescription():
-    if "MayaToCommon" in appleseed.path.path(__file__):
-        xmlFile = appleseed.path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderDefinitions.xml")
+    if "MayaToCommon" in path.path(__file__):
+        xmlFile = path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderdefinitions.xml")
     else:
-        xmlFile = appleseed.path.path(__file__).parent / "resources/shaderDefinitions.xml"
+        xmlFile = path.path(__file__).parent / "resources/shaderdefinitions.xml"
     if not xmlFile.exists():
         log.error("No shader xml file: {0}".format(xmlFile))
         return
@@ -228,10 +228,10 @@ def writeXMLShaderDescription(shaderDict=None):
     if shaderDict is None:
         shaderDict = SHADER_DICT
     xmlFile = None
-    if "MayaToCommon" in appleseed.path.path(__file__):
-        xmlFile = appleseed.path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderDefinitions.xml")
+    if "MayaToCommon" in path.path(__file__):
+        xmlFile = path.path("H:/UserDatenHaggi/Documents/coding/mayaToAppleseed/mtap_devmodule/resources/shaderdefinitions.xml")
     else:
-        xmlFile = appleseed.path.path(__file__).parent / "resources/shaderDefinitions.xml"
+        xmlFile = path.path(__file__).parent / "resources/shaderdefinitions.xml"
     if not xmlFile.exists():
         log.error("No shader xml file: {0}".format(xmlFile))
         return
@@ -271,7 +271,7 @@ def updateOSLShaderInfo(force=False, osoFiles=[]):
     global SHADER_DICT    
     for osoFile in osoFiles:        
         infoCmd = cmd + " " + osoFile
-        shaderName = appleseed.path.path(osoFile).basename().replace(".oso", "")
+        shaderName = path.path(osoFile).basename().replace(".oso", "")
         log.info("Updating shader info for shader {1}. cmd: {0}".format(infoCmd, shaderName))
         process = subprocess.Popen(infoCmd, bufsize=1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, creationflags=IDLE_PRIORITY_CLASS)               
         content = []
@@ -295,7 +295,7 @@ def compileAllShaders(renderer = "appleseed"):
         log.error("Error: there is no environmentvariable called OSL_SHADERS_LOCATION. Please create one and point it to the base shader dir.")
         # we expect this file in module/scripts so we can try to find the shaders in ../shaders
         log.error("Trying to find the shaders dir from current file: {0}".format(__file__))
-        shaderDir = appleseed.path.path(__file__).parent / "shaders"
+        shaderDir = path.path(__file__).parent / "shaders"
         if shaderDir.exists():
             log.info("Using found shaders directory {0}".format(shaderDir))
             
@@ -312,8 +312,8 @@ def compileAllShaders(renderer = "appleseed"):
                 if not os.path.exists(dest_dir):
                     os.makedirs(dest_dir)
                 osoOutputPath = dest_dir + filename.replace(".osl", ".oso")                
-                osoOutputFile = appleseed.path.path(osoOutputPath)
-                oslInputFile = appleseed.path.path(oslPath)
+                osoOutputFile = path.path(osoOutputPath)
+                oslInputFile = path.path(oslPath)
                 
                 if osoOutputFile.exists():
                     if osoOutputFile.mtime > oslInputFile.mtime:
