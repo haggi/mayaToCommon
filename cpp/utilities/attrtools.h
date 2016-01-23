@@ -6,7 +6,7 @@
 #include <maya/MString.h>
 #include <maya/MColor.h>
 #include <maya/MVector.h>
-#include <maya/Mpoint.h>
+#include <maya/MPoint.h>
 
 enum ATTR_TYPE
 {
