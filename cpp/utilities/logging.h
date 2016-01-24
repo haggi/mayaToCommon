@@ -3,7 +3,6 @@
 
 #include <maya/MString.h>
 #include <maya/MTimerMessage.h>
-#include <thread>
 #include <maya/MStreamUtils.h>
 
 #define COUT(msg) MStreamUtils::stdOutStream() << msg << "\n"

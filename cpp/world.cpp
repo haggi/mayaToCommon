@@ -1,5 +1,4 @@
 #include "world.h"
-#include <thread>
 #include <maya/MSceneMessage.h>
 #include <maya/MGlobal.h>
 #include "mayascenefactory.h"

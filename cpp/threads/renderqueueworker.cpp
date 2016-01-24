@@ -1,7 +1,6 @@
 #include <time.h>
 #include <map>
 
-#include <thread>
 #include <maya/MGlobal.h>
 #include <maya/MSceneMessage.h>
 #include <maya/MTimerMessage.h>
@@ -24,7 +23,7 @@
 #include "../world.h"
 #include "../renderprocess.h"
 
-std::thread RenderQueueWorker::sceneThread;
+threadObject RenderQueueWorker::sceneThread;
 static bool userEventFinished = false;
 static int numTiles = 0;
 static int tilesDone = 0;
@@ -111,7 +110,7 @@ void RenderQueueWorker::callbackWorker(size_t cbId)
 	while (callbackList[cbId].terminate == false)
 	{
 		callbackList[cbId].functionPointer();
-		std::this_thread::sleep_for(std::chrono::milliseconds(callbackList[cbId].millsecondInterval));
+		sleepFor(callbackList[cbId].millsecondInterval);
 	}
 	Logging::debug("callbackWorker finished. Removing callback.");
 }
@@ -123,7 +122,7 @@ size_t RenderQueueWorker::registerCallback(std::function<void()> function, unsig
 	cb.functionPointer = function;
 	cb.millsecondInterval = millisecondsUpdateInterval;
 	callbackList.push_back(cb);
-	std::thread t(callbackWorker, cb.callbackId);
+	threadObject t(callbackWorker, cb.callbackId);
 	t.detach();
 	return cb.callbackId;
 }
@@ -505,8 +504,9 @@ void RenderQueueWorker::iprFindLeafNodes()
 	
 	// the idea is that the renderer waits in IPR mode for an non empty modifiesElementList,
 	// it updates the render database with the elements and empties the list which is then free for the next run
+	// TODO: maybe use wait for variables
 	while (modifiedElementList.size() > 0)
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		sleepFor(100);
 
 	std::vector<InteractiveElement *>::iterator llIt;
 	for (llIt = leafList.begin(); llIt != leafList.end(); llIt++)
@@ -561,7 +561,7 @@ void RenderQueueWorker::computationEventThread()
 			theRenderEventQueue()->push(e);
 		}
 		if (!done)
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			sleepFor(100);
 		else
 			Logging::debug("computationEventThread done");
 	}
@@ -577,7 +577,7 @@ void RenderQueueWorker::renderProcessThread()
 		{
 			MayaTo::getWorldPtr()->worldRendererPtr->render();
 			while ((modifiedElementList.size() == 0) && (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER) && (MayaTo::getWorldPtr()->renderState != MayaTo::MayaToWorld::WorldRenderState::RSTATESTOPPED))
-				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				sleepFor(100);
 			if ((MayaTo::getWorldPtr()->renderType != MayaTo::MayaToWorld::WorldRenderType::IPRRENDER) || (MayaTo::getWorldPtr()->renderState == MayaTo::MayaToWorld::WorldRenderState::RSTATESTOPPED))
 				break;
 			//MayaTo::getWorldPtr()->worldRendererPtr->abortRendering();
@@ -633,7 +633,7 @@ void RenderQueueWorker::sendFinalizeIfQueueEmpty(void *)
 {
 	
 	while (theRenderEventQueue()->size() > 0)
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		sleepFor(10);
 
 	Logging::debug("sendFinalizeIfQueueEmpty: queue is nullptr, sending finalize.");
 	EventQueue::Event e;
@@ -646,7 +646,7 @@ void RenderQueueWorker::iprWaitForFinish(EventQueue::Event e)
 	Logging::debug("iprWaitForFinish.");
 	while (MayaTo::getWorldPtr()->getRenderState() != MayaTo::MayaToWorld::WorldRenderState::RSTATENONE)
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		sleepFor(100);
 	}
 	Logging::debug("iprWaitForFinish - Renderstate is RSTATENONE, sending event.");
 	theRenderEventQueue()->push(e);
@@ -692,7 +692,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 					MayaTo::MayaToWorld::WorldRenderState rs = MayaTo::getWorldPtr()->getRenderState();
 					if (MayaTo::getWorldPtr()->getRenderState() != MayaTo::MayaToWorld::WorldRenderState::RSTATENONE)
 					{
-						std::thread waitThread = std::thread(RenderQueueWorker::iprWaitForFinish, e);
+						threadObject waitThread = threadObject(RenderQueueWorker::iprWaitForFinish, e);
 						waitThread.detach();
 						break;
 					}
@@ -730,7 +730,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 
 				if (MGlobal::mayaState() != MGlobal::kBatch)
 				{
-					std::thread cet = std::thread(RenderQueueWorker::computationEventThread);
+					threadObject cet = threadObject(RenderQueueWorker::computationEventThread);
 					cet.detach();
 				}
 
@@ -756,7 +756,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 					RenderProcess::doPreFrameJobs(); // preRenderScript etc.
 					RenderProcess::doPrepareFrame(); // parse scene and update objects
 					RenderProcess::doRenderPreFrameJobs(); // call renderers pre frame jobs
-					RenderQueueWorker::sceneThread = std::thread(RenderQueueWorker::renderProcessThread);
+					RenderQueueWorker::sceneThread = threadObject(RenderQueueWorker::renderProcessThread);
 				}
 				else{
 					e.type = EventQueue::Event::RENDERDONE;
@@ -894,7 +894,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 			{
 				Logging::debug("Event::IPRUPDATESCENE");
 				//MayaTo::getWorldPtr()->worldRendererPtr->interactiveUpdateList = modifiedElementList;
-				//std::thread tst = std::thread(RenderQueueWorker::interactiveStartThread);
+				//threadObject tst = threadObject(RenderQueueWorker::interactiveStartThread);
 				//tst.detach();
 				//modifiedElementList.clear();
 			}

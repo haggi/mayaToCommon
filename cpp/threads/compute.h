@@ -10,11 +10,11 @@ I hope this one works better, or at least as expected.
 #include <windows.h>
 #endif
 #include <iostream>
-#include <thread>
 #include <chrono>
 #include <maya/MComputation.h>
 #include <maya/MRenderView.h>
 #include <maya/MGlobal.h>
+#include "definitions.h"
 
 static MString setWaitCursorCmd = "import pymel.core as pm;pm.waitCursor(state=True);";
 static MString releaseWaitCursorCmd = "import pymel.core as pm;pm.waitCursor(state=False);pm.refresh()";
@@ -25,7 +25,7 @@ private:
 	static bool escPressed;
 	static bool autoexit;
 	static bool checkDone;
-	static std::thread checkThread;
+	static threadObject checkThread;
 	static bool usewaitcursor;
 #ifdef WIN32
 	static HWND windowHandle;
@@ -57,7 +57,7 @@ private:
 			STOP;
 #endif
 			if (!done && !Compute::checkDone)
-				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				sleepFor(100);
 		}
 		//std::cout << "checkInterrupt done.\n";
 		std::cout.flush();
@@ -79,7 +79,7 @@ public:
 		Compute::checkDone = false;
 		Compute::usewaitcursor = useWaitCursor;
 		Compute::autoexit = autoExit;
-		Compute::checkThread = std::thread(checkInterrupt);
+		Compute::checkThread = threadObject(checkInterrupt);
 
 #ifdef WIN32
 		int count = 0;
@@ -118,6 +118,6 @@ bool Compute::autoexit = false;
 bool Compute::checkDone = false;
 bool Compute::usewaitcursor = false;
 HWND Compute::windowHandle = 0;
-std::thread Compute::checkThread;
+threadObject Compute::checkThread;
 
 #endif

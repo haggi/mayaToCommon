@@ -1,12 +1,12 @@
 #ifndef RENDER_QUEUE_H
 #define RENDER_QUEUE_H
 
-#include <thread>
 #include <functional>
 #include <maya/MRenderView.h>
 #include <maya/MNodeMessage.h>
-#include "queue.h"
 #include <map>
+#include "queue.h"
+#include "definitions.h"
 
 static EventQueue::concurrent_queue<EventQueue::Event> RenderEventQueue;
 EventQueue::concurrent_queue<EventQueue::Event> *theRenderEventQueue();
@@ -47,7 +47,7 @@ public:
 	static void sceneCallback(void *);
 	static void pluginUnloadCallback(void *);
 	static void computationEventThread();
-	static std::thread sceneThread;
+	static threadObject sceneThread;
 	static void renderProcessThread();
 	static void sendFinalizeIfQueueEmpty(void *);
 	static void setStartTime();

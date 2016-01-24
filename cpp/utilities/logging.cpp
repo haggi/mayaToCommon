@@ -3,7 +3,6 @@
 #include "memory/memoryinfo.h"
 #include <maya/MGlobal.h>
 #include <stdio.h>
-#include <thread>
 
 void Logging::setLogLevel( Logging::LogLevel level)
 {
