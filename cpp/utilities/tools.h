@@ -9,12 +9,15 @@
 #include <maya/MMatrix.h>
 #include <maya/MPlug.h>
 #include <maya/MObjectArray.h>
-#include <direct.h>
-#include <io.h>
 #include <fstream>
 #include <math.h>
 #include <memory>
 #include <vector>
+
+#ifdef _WIN32
+#include <direct.h>
+#include <io.h>
+#endif
 
 static MString RendererName;
 static MString RendererShortCut;

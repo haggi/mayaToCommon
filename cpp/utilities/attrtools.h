@@ -38,7 +38,7 @@ bool getString(MString& plugName, MFnDependencyNode& dn, MString& value);
 
 MString getString(const char *plugName, MFnDependencyNode& dn);
 
-MString getStringAttr(MString plugName, MFnDependencyNode& dn, MString default);
+MString getStringAttr(MString plugName, MFnDependencyNode& dn, MString defaultValue);
 
 bool getInt(MString& plugName, MFnDependencyNode& dn, int& value);
 
@@ -48,7 +48,7 @@ int getIntAttr(const char *plugName, MFnDependencyNode& dn, int defaultValue);
 
 bool getUInt(const char *plugName, MFnDependencyNode& dn, uint& value);
 
-bool getBool(MString& plugName, MFnDependencyNode& dn, bool& value);
+bool getBool(const MString& plugName, const MFnDependencyNode& dn, bool& value);
 
 bool getBool(const char *plugName, MFnDependencyNode& dn, bool& value);
 

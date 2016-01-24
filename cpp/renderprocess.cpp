@@ -72,13 +72,13 @@ namespace RenderProcess{
 		{
 			MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentMbStep = mbStepId;
 			MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentMbElement = MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId];
-			MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber = (float)(currentFrame + MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].time);
+			MayaTo::getWorldPtr()->worldRenderGlobalsPtr->currentFrameNumber = (float)(currentFrame + MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].elementTime);
 			bool needView = true;
 
 			// we can have some mb time steps at the same time, e.g. for xform and deform, then we do not need to update the view
 			if (mbStepId > 0)
 			{
-				if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].time == MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId - 1].time)
+				if (MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId].elementTime == MayaTo::getWorldPtr()->worldRenderGlobalsPtr->mbElementList[mbStepId - 1].elementTime)
 				{
 					needView = false;
 				}
