@@ -215,12 +215,12 @@ MString RenderGlobals::getImageOutputFile()
 
 bool RenderGlobals::isDeformStep()
 {
-	return ((this->currentMbElement.elementType == MbElement::Geo) || (this->currentMbElement.elementType == MbElement::Both));
+	return ((this->currentMbElement.elementType == MbElement::MotionBlurGeo) || (this->currentMbElement.elementType == MbElement::MotionBlurBoth));
 }
 
 bool RenderGlobals::isTransformStep()
 {
-	return ((this->currentMbElement.elementType == MbElement::XForm) || (this->currentMbElement.elementType == MbElement::Both));
+	return ((this->currentMbElement.elementType == MbElement::MotionBlurXForm) || (this->currentMbElement.elementType == MbElement::MotionBlurBoth));
 }
 
 // If motionblur is turned on, I need to evaluate the instances/geometry serveral times.
@@ -234,8 +234,8 @@ bool RenderGlobals::getMbSteps()
 	//if(this->currentRenderPass->passType == RenderPass::ShadowMap)
 	//{
 	//	MbElement mbel;
-	//	mbel.elementType = MbElement::Both;
-	//	mbel.time = 0.0;
+	//	mbel.elementType = MbElement::MotionBlurBoth;
+	//	mbel.elementTime = 0.0;
 	//	this->mbElementList.push_back(mbel);
 	//	return true;
 	//}
@@ -245,8 +245,8 @@ bool RenderGlobals::getMbSteps()
 	if( !this->doMb )
 	{
 		MbElement mbel;
-		mbel.elementType = MbElement::Both;
-		mbel.time = 0.0;
+		mbel.elementType = MbElement::MotionBlurBoth;
+		mbel.elementTime = 0.0;
 		this->mbElementList.push_back(mbel);
 		return true;
 	}
@@ -299,8 +299,8 @@ bool RenderGlobals::getMbSteps()
 		for( int step = 0; step < this->xftimesamples; step++)
 		{
 			MbElement mbel;
-			mbel.elementType = MbElement::XForm;
-			mbel.time = mbStepValue;
+			mbel.elementType = MbElement::MotionBlurXForm;
+			mbel.elementTime = mbStepValue;
 			mbStepValue += xfStepSize;
 			sortList.push_back(mbel);
 		}
@@ -313,8 +313,8 @@ bool RenderGlobals::getMbSteps()
 		for( int step = 0; step < this->geotimesamples; step++)
 		{
 			MbElement mbel;
-			mbel.elementType = MbElement::Geo;
-			mbel.time = mbStepValue;
+			mbel.elementType = MbElement::MotionBlurGeo;
+			mbel.elementTime = mbStepValue;
 			mbStepValue += geoStepSize;
 			sortList.push_back(mbel);
 		}
@@ -327,8 +327,8 @@ bool RenderGlobals::getMbSteps()
 
 	// testing this is for non mb objects or changing topology objects
 	MbElement mbel;
-	mbel.elementType = MbElement::None;
-	mbel.time = 0;
+	mbel.elementType = MbElement::MotionBlurNone;
+	mbel.elementTime = 0;
 	this->mbElementList.push_back(mbel);
 
 	return true;

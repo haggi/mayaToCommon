@@ -12,7 +12,7 @@
 
 // A render pass contains a complete render procedure.
 // e.g. a ShadowMap Render pass will start a new rendering. Here all shadow casting lights will produce
-// shadow maps. They can be seen as a pendant to frames in a sequence. 
+// shadow maps. They can be seen as a pendant to frames in a sequence.
 
 // During the render procedure the passes are collected in the render globals.
 // There are preSequence passes. e.g. for shadow maps that are created only once before the final rendering.
@@ -38,14 +38,14 @@ public:
 
 	RenderPassType passType;
 	EvalFrequency evalFrequency;
-	
+
 	std::vector<void *> objectList; // void element pointer to camera, light or other things
 
 	RenderPass()
 	{
 		passType = PassNone;
 		evalFrequency = FrequencyNone;
-	};
+	}
 };
 
 // Some renderers offer different transform mb steps and geometry deformation steps (mantra)
@@ -55,25 +55,25 @@ class MbElement
 public:
 
 	enum Type{
-		XForm,
-		Geo,
-		Both,
-		None
+		MotionBlurXForm,
+		MotionBlurGeo,
+		MotionBlurBoth,
+		MotionBlurNone
 	};
 
 	MbElement::Type elementType;
-	double time;
+	double elementTime;
 
 	// these are for sorting the mb steps
-	bool operator>(const MbElement& other) const 
+	bool operator>(const MbElement& other) const
 	{
-		return ( time > other.time );
-	};
-	bool operator<(const MbElement& other) const 
+		return ( elementTime > other.elementTime );
+	}
+	bool operator<(const MbElement& other) const
 	{
-		return( time < other.time );
-	};
-	MbElement(void){};
+		return( elementTime < other.elementTime );
+	}
+	MbElement(void){}
 };
 
 struct RenderType{
@@ -97,14 +97,14 @@ public:
 	MDistance::Unit rendererUnit;
 	RendererUpAxis internalAxis;
 	RendererUpAxis rendererAxis;
-	
+
 	float internalScaleFactor;
 	float rendererScaleFactor;
 	float toMillimeters(float mm);
 
 	MObject renderGlobalsMobject;
 	bool good;
-	
+
 	bool doAnimation;
 	float currentFrameNumber; // current real frame (with mb steps)
 	float currentFrame; // current frame
@@ -121,12 +121,12 @@ private:
 	int imgHeight;
 	int currentFrameIndex;
 public:
-	void setWidth(int w) { this->imgWidth = w; };
-	void setHeight(int h) { this->imgHeight = h; };
-	void setWidthHeight(int w, int h) { this->imgWidth = w; this->imgHeight = h; };
-	void getWidthHeight(int& w, int& h){ w = this->imgWidth; h = this->imgHeight; };
-	int getWidth(){ return this->imgWidth; };
-	int getHeight(){ return this->imgHeight; };
+	void setWidth(int w) { this->imgWidth = w; }
+	void setHeight(int h) { this->imgHeight = h; }
+	void setWidthHeight(int w, int h) { this->imgWidth = w; this->imgHeight = h; }
+	void getWidthHeight(int& w, int& h){ w = this->imgWidth; h = this->imgHeight; }
+	int getWidth(){ return this->imgWidth; }
+	int getHeight(){ return this->imgHeight; }
 	float updateFrameNumber(); // returns the current frame number and incements the currentFrameIndex
 	float getFrameNumber();
 	bool frameListDone();
@@ -148,14 +148,14 @@ public:
 	float gamma;
 
 	bool doMb;
-	float motionBlurRange; // float range default = 0.4 ~ 144°
+	float motionBlurRange; // float range default = 0.4 ~ 144ï¿½
 	int motionBlurType; // Center, FrameStart, FrameEnd
 	float mbStartTime; // frame relative start time e.g. -0.2 frames
 	float mbEndTime; // frame relative end time e.g. 0.2 frames
 	float mbLength; // absolute length of motion blur, e.g. 0.4 frames
 	bool doDof;
 	int bitdepth; // 8, 16, 16halfFloat, 32float
-	
+
 	int threads;
 	int tilesize;
 	int translatorVerbosity;
@@ -170,7 +170,7 @@ public:
 	std::vector<MbElement> mbElementList;
 	MbElement currentMbElement; // contains type and relative time
 	int currentMbStep; // currend mb step id 0 - x
-	bool isMbStartStep(); 
+	bool isMbStartStep();
 
 	bool createDefaultLight;
 
@@ -195,9 +195,9 @@ private:
 
 public:
 	void checkRenderRegion();
-	void setUseRenderRegion(bool useRegion){ useRenderRegion = useRegion; checkRenderRegion(); };
-	bool getUseRenderRegion() { return useRenderRegion; };
-	void getRenderRegion(int& left, int& bottom, int& right, int& top) { left = regionLeft; bottom = regionBottom; right = regionRight; top = regionTop; };
+	void setUseRenderRegion(bool useRegion){ useRenderRegion = useRegion; checkRenderRegion(); }
+	bool getUseRenderRegion() { return useRenderRegion; }
+	void getRenderRegion(int& left, int& bottom, int& right, int& top) { left = regionLeft; bottom = regionBottom; right = regionRight; top = regionTop; }
 	bool detectShapeDeform;
 	bool exportSceneFile;
 	MString exportSceneFileName;

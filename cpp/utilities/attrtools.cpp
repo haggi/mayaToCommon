@@ -137,13 +137,13 @@ MString getString(const char *plugName, MFnDependencyNode& dn)
 	return plug.asString(ctx, &stat);
 }
 
-MString getStringAttr(MString plugName, MFnDependencyNode& dn, MString default)
+MString getStringAttr(MString plugName, MFnDependencyNode& dn, MString defaultValue)
 {
 	MDGContext ctx = MDGContext::fsNormal;
 	MStatus stat = MS::kSuccess;
 	MPlug plug = dn.findPlug(plugName, &stat);
 	if (!stat)
-		return default;
+		return defaultValue;
 	return plug.asString(ctx, &stat);
 }
 
@@ -197,7 +197,7 @@ bool getUInt(const char *plugName, MFnDependencyNode& dn, uint& value)
 	return ret;
 }
 
-bool getBool(MString& plugName, MFnDependencyNode& dn, bool& value)
+bool getBool(const MString& plugName, const MFnDependencyNode& dn, bool& value)
 {
 	MDGContext ctx = MDGContext::fsNormal;
 	MStatus stat = MS::kSuccess;
