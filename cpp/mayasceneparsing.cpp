@@ -23,9 +23,9 @@
 #include "utilities/pystring.h"
 #include "rendering/renderer.h"
 
-std::vector<std::shared_ptr<MayaObject>>  origObjects;
+std::vector<sharedPtr<MayaObject>>  origObjects;
 
-bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, std::shared_ptr<ObjectAttributes> parentAttributes, std::shared_ptr<MayaObject> parentObject)
+bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, sharedPtr<ObjectAttributes> parentAttributes, sharedPtr<MayaObject> parentObject)
 {
 	Logging::debugs(MString("parse: ") + currentPath.fullPathName(), level);
 	
@@ -33,8 +33,8 @@ bool MayaScene::parseSceneHierarchy(MDagPath currentPath, int level, std::shared
 	if (pystring::find(currentPath.fullPathName().asChar(), "shaderBall") > -1)
 		return true;
 
-	std::shared_ptr<MayaObject> mo = MayaTo::MayaObjectFactory().createMayaObject(currentPath);
-	std::shared_ptr<ObjectAttributes> currentAttributes = mo->getObjectAttributes(parentAttributes);
+	sharedPtr<MayaObject> mo = MayaTo::MayaObjectFactory().createMayaObject(currentPath);
+	sharedPtr<ObjectAttributes> currentAttributes = mo->getObjectAttributes(parentAttributes);
 	mo->parent = parentObject;
 	classifyMayaObject(mo);
 	if (MayaTo::getWorldPtr()->renderType == MayaTo::MayaToWorld::WorldRenderType::IPRRENDER)
@@ -97,7 +97,7 @@ bool MayaScene::parseScene()
 		this->getLightLinking();
 		if (this->uiCamera.isValid() && (MGlobal::mayaState() != MGlobal::kBatch))
 		{
-			std::shared_ptr<MayaObject> cam = nullptr;
+			sharedPtr<MayaObject> cam = nullptr;
 			for (uint camId = 0; camId < this->camList.size(); camId++)
 			{
 				if (this->camList[camId]->dagPath == this->uiCamera)
@@ -124,7 +124,7 @@ bool MayaScene::updateScene(MFn::Type updateElement)
 
 	for (int objId = 0; objId < this->objectList.size(); objId++)
 	{
-		std::shared_ptr<MayaObject> obj = this->objectList[objId];
+		sharedPtr<MayaObject> obj = this->objectList[objId];
 
 		if (!obj->mobject.hasFn(updateElement))
 			continue;
@@ -180,7 +180,7 @@ bool MayaScene::updateScene()
 
 	for (size_t camId = 0; camId < this->camList.size(); camId++)
 	{
-		std::shared_ptr<MayaObject> obj = this->camList[camId];
+		sharedPtr<MayaObject> obj = this->camList[camId];
 		obj->updateObject();
 
 		if (!MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
@@ -197,11 +197,11 @@ bool MayaScene::updateScene()
 	}
 
 
-	std::vector<std::shared_ptr<MayaObject>> ::iterator mIter;
+	std::vector<sharedPtr<MayaObject>> ::iterator mIter;
 	mIter = this->lightList.begin();
 	for (; mIter != this->lightList.end(); mIter++)
 	{
-		std::shared_ptr<MayaObject> obj = *mIter;
+		sharedPtr<MayaObject> obj = *mIter;
 		obj->updateObject();
 
 		if (!MayaTo::getWorldPtr()->worldRenderGlobalsPtr->isMbStartStep())
@@ -243,7 +243,7 @@ bool MayaScene::updateInstancer()
 	size_t numElements = this->instancerNodeElements.size();
 	for (size_t i = 0; i < numElements; i++)
 	{
-		std::shared_ptr<MayaObject> obj = this->instancerNodeElements[i];
+		sharedPtr<MayaObject> obj = this->instancerNodeElements[i];
 		MMatrix origMatrix;
 		origMatrix.setToIdentity();
 		if (obj->origObject != nullptr)
@@ -266,7 +266,7 @@ bool MayaScene::updateInstancer()
 	return true;
 }
 
-std::vector<std::shared_ptr<MayaObject>>  InstDoneList;
+std::vector<sharedPtr<MayaObject>>  InstDoneList;
 // parsing all particle instancer nodes in the scene
 // here I put all nodes created by an instancer node into a array of its own.
 // The reason why I don't simply add it to the main list is that I have to recreate them
@@ -343,23 +343,23 @@ bool MayaScene::parseInstancerNew()
 			int pathStart = pathStartIndices[p];
 
 			//  loop through the instanced paths for this particle
-			std::shared_ptr<ObjectAttributes> currentAttributes = nullptr;
+			sharedPtr<ObjectAttributes> currentAttributes = nullptr;
 			for (int i = pathStart; i < pathStart + numPaths; i++)
 			{
 				int curPathIndex = pathIndices[i];
 				MDagPath curPath = allPaths[curPathIndex];
 
-				std::shared_ptr<MayaObject> particleMObject = MayaTo::MayaObjectFactory().createMayaObject(curPath);
+				sharedPtr<MayaObject> particleMObject = MayaTo::MayaObjectFactory().createMayaObject(curPath);
 				MFnDependencyNode pOrigNode(particleMObject->mobject);
 				MObject pOrigObject = pOrigNode.object();
 
 				// search for the correct orig MayaObject element
 				// TODO: visibiliy check - necessary?
-				std::shared_ptr<MayaObject> origObj = nullptr;
-				std::vector<std::shared_ptr<MayaObject>> ::iterator mIter = origObjects.begin();
+				sharedPtr<MayaObject> origObj = nullptr;
+				std::vector<sharedPtr<MayaObject>> ::iterator mIter = origObjects.begin();
 				for (; mIter != origObjects.end(); mIter++)
 				{
-					std::shared_ptr<MayaObject> obj = *mIter;
+					sharedPtr<MayaObject> obj = *mIter;
 					if (obj->mobject == pOrigObject)
 					{
 						origObj = obj;

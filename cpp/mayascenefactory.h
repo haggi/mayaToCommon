@@ -1,7 +1,7 @@
 #ifndef MAYA_SCENE_FACTORY
 #define MAYA_SCENE_FACTORY
 
-#include <boost/shared_ptr.hpp>
+#include "definitions.h"
 
 class MayaScene;
 
@@ -11,7 +11,7 @@ namespace MayaTo
 	{
 	public:
 		void createMayaScene();
-		std::shared_ptr<MayaScene> getMayaScene();
+		sharedPtr<MayaScene> getMayaScene();
 		void deleteMayaScene();
 	};
 }

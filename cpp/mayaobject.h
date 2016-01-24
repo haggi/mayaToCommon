@@ -16,7 +16,7 @@
 #include <maya/MMatrix.h>
 #include <maya/MColor.h>
 
-//typedef void (*functionPointer)(void *, void *); 
+#include "definitions.h"
 
 class MayaScene;
 class Material;
@@ -54,14 +54,14 @@ public:
 	int index;
 	MDagPath dagPath;
 	bool removed = false; // in IPR we simply flag an object as removed instead of really removing it
-	std::shared_ptr<ObjectAttributes> attributes;
+	sharedPtr<ObjectAttributes> attributes;
 
 	std::vector<MDagPath> linkedLights; // for objects - light linking
 	bool lightExcludeList; // if true the linkedLights list contains excluded lights, else included lights
 	std::vector<MDagPath> shadowObjects; // for lights - shadow linking
 	bool shadowExcludeList; // if true the shadowObjects contains objects which ignores shadows from the current light
 	std::vector<MDagPath> castNoShadowObjects; // for lights - shadow linking
-	std::vector<std::shared_ptr<MayaObject>>  excludedObjects; // for lights - excluded objects
+	std::vector<sharedPtr<MayaObject>>  excludedObjects; // for lights - excluded objects
 
 
 	std::vector<MString> exportFileNames; // for every mb step complete filename for every exported shape file
@@ -72,7 +72,7 @@ public:
 	std::vector<MeshData> meshDataList;
 	MObjectArray shadingGroups;
 	MIntArray perFaceAssignments;	
-	std::vector<std::shared_ptr<Material>> materialList; // for every shading group connected to the shape, we have a material
+	std::vector<sharedPtr<Material>> materialList; // for every shading group connected to the shape, we have a material
 
 	// instancer node attributes
 	MMatrix instancerMatrix; // matrix of instancer node and paricle node
@@ -108,10 +108,10 @@ public:
 					MFloatArray& v, MIntArray& triPointIndices, MIntArray& triNormalIndices, 
 					MIntArray& triUvIndices, MIntArray& triMatIndices); // all triIndices contain per vertex indices except the triMatIndices, this is per face
 	virtual bool geometryShapeSupported();
-	virtual std::shared_ptr<ObjectAttributes> getObjectAttributes(std::shared_ptr<ObjectAttributes> parentAttributes = nullptr) = 0;
+	virtual sharedPtr<ObjectAttributes> getObjectAttributes(sharedPtr<ObjectAttributes> parentAttributes = nullptr) = 0;
 
-	std::shared_ptr<MayaObject> parent;
-	std::shared_ptr<MayaObject> origObject; // this is necessary for instanced objects that have to access the original objects data
+	sharedPtr<MayaObject> parent;
+	sharedPtr<MayaObject> origObject; // this is necessary for instanced objects that have to access the original objects data
 	MayaObject(MObject& mobject);
 	MayaObject(MDagPath& objPath);
 	virtual ~MayaObject();

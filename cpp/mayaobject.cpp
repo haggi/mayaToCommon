@@ -345,7 +345,7 @@ void MayaObject::addMeshData()
 	if (this->hasBifrostVelocityChannel())
 	{
 		bool doMb = this->motionBlurred;
-		std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;		
+		sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;		
 		doMb = doMb && renderGlobals->doMb;
 
 		Logging::debug(MString("Found bifrost velocity data for object: ") + this->shortName);
@@ -397,9 +397,10 @@ void MayaObject::addMeshData()
 		int np = mdata.points.length();
 		this->meshDataList.push_back(mdata);
 
-		for (auto md : this->meshDataList)
+		std::vector<MeshData>::iterator mdIt;
+		for (mdIt = this->meshDataList.begin(); mdIt != meshDataList.end(); mdIt++)
 		{
-			np = md.points.length();
+			np = mdIt->points.length();
 		}
 	}
 

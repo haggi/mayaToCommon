@@ -68,9 +68,9 @@ namespace MayaTo{
 		virtual void setRendererUnit();
 		virtual void setRendererAxis();
 
-		std::shared_ptr<MayaScene> worldScenePtr;
-		std::shared_ptr<Renderer> worldRendererPtr;
-		std::shared_ptr<RenderGlobals> worldRenderGlobalsPtr;
+		sharedPtr<MayaScene> worldScenePtr;
+		sharedPtr<Renderer> worldRendererPtr;
+		sharedPtr<RenderGlobals> worldRenderGlobalsPtr;
 
 		MStringArray objectNames;
 		std::vector<void *> objectPtr;

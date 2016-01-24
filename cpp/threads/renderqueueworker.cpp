@@ -163,12 +163,14 @@ void RenderQueueWorker::addIPRCallbacks()
 {
 	MStatus stat;
 	IprCallbacksDone = false;
-	std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+	sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
 
-	for (auto element : mayaScene->interactiveUpdateMap)
+	std::map<uint, InteractiveElement>::iterator ite;
+	std::map<uint, InteractiveElement> ielements = mayaScene->interactiveUpdateMap;
+	for (ite = ielements.begin(); ite != ielements.end(); ite++)
 	{
-		uint elementId = element.first;
-		InteractiveElement iae = element.second;
+		uint elementId = ite->first;
+		InteractiveElement iae = ite->second;
 		MObject nodeDirty;
 
 		if ( iae.obj )
@@ -213,17 +215,20 @@ void RenderQueueWorker::addIPRCallbacks()
 void RenderQueueWorker::IPRUpdateCallbacks()
 {
 	MStatus stat;
-	std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+	sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
 
 	for (size_t elementId = 0; elementId < mayaScene->interactiveUpdateMap.size(); elementId++)
 	{
 		InteractiveElement *element = &mayaScene->interactiveUpdateMap[elementId];
 		MCallbackId id = 0;
-		for (auto objElement : objIdMap)
+
+		std::map<MCallbackId, MObject>::iterator mit;
+		std::map<MCallbackId, MObject> oimap = objIdMap;
+		for (mit = oimap.begin(); mit != oimap.end(); mit++)
 		{
-			if (element->node == objElement.second)
+			if (element->node == mit->second)
 			{
-				id = objElement.first;
+				id = mit->first;
 				break;
 			}
 		}
@@ -243,7 +248,7 @@ void  RenderQueueWorker::IPRattributeChangedCallback(MNodeMessage::AttributeMess
 {
 	Logging::debug(MString("IPRattributeChangedCallback. attribA: ") + plug.name() + " attribB: " + otherPlug.name());
 	InteractiveElement *userData = (InteractiveElement *)element;
-	std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+	sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
 
 	if (!userData->obj)
 		return;
@@ -305,7 +310,7 @@ void  RenderQueueWorker::IPRattributeChangedCallback(MNodeMessage::AttributeMess
 void RenderQueueWorker::IPRNodeAddedCallback(MObject& node, void *userPtr)
 {
 	Logging::debug(MString("IPRNodeAddedCallback. Node: ") + getObjectName(node));
-	std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+	sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
 	MStatus stat;
 
 	if (node.hasFn(MFn::kTransform))
@@ -388,7 +393,7 @@ void RenderQueueWorker::IPRNodeRemovedCallback(MObject& node, void *userPtr)
 		objIdMap.erase(nodeCallbackId);
 
 	// get the MayaObject element and mark it as removed.
-	std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+	sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
 	std::map<uint, InteractiveElement>::iterator iter;
 	for (iter = mayaScene->interactiveUpdateMap.begin(); iter != mayaScene->interactiveUpdateMap.end(); iter++)
 	{
@@ -460,12 +465,13 @@ void RenderQueueWorker::removeCallbacks()
 
 void RenderQueueWorker::iprFindLeafNodes()
 {
-	std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+	sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
 	static std::map<MCallbackId, InteractiveElement *>::iterator it;
 	std::vector<InteractiveElement *> leafList;
-	for (auto element : idInteractiveMap)
+
+	for (it = idInteractiveMap.begin(); it != idInteractiveMap.end(); it++)
 	{
-		MObject node = element.second->node;
+		MObject node = it->second->node;
 		if (node.hasFn(MFn::kTransform))
 		{
 			MItDag dagIter;
@@ -473,21 +479,17 @@ void RenderQueueWorker::iprFindLeafNodes()
 			{
 				if (dagIter.currentItem().hasFn(MFn::kShape))
 				{
-					//Logging::debug(MString("findLeaf: found shape node below transform: ") + dagIter.fullPathName());
-					for (auto sceneElement : mayaScene->interactiveUpdateMap)
+					static std::map<uint, InteractiveElement>::iterator seIt;
+					for (seIt = mayaScene->interactiveUpdateMap.begin(); seIt != mayaScene->interactiveUpdateMap.end(); seIt++)
 					{
-						if (sceneElement.second.node.hasFn(MFn::kShape))
+						if (seIt->second.node.hasFn(MFn::kShape))
 						{
-							InteractiveElement iel = sceneElement.second;
-							//Logging::debug(MString("findLeaf: sceneElement shape: ") + iel.obj->fullName + " dag " + iel.obj->dagPath.fullPathName() + " dagdga " + dagIter.fullPathName());
-							//if (dagIter.fullPathName() == iel.obj->dagPath.fullPathName())
-							//if (dagIter.currentItem() == sceneElement.second.obj->dagPath.node())
-							if (sceneElement.second.node == dagIter.currentItem())
+							InteractiveElement iel = seIt->second;
+							if (seIt->second.node == dagIter.currentItem())
 							{
-								//Logging::debug(MString("findLeaf: found element shape: ") + sceneElement.second.name + " for dag shape: " + dagIter.fullPathName());
-								InteractiveElement *ie = &mayaScene->interactiveUpdateMap[sceneElement.first];
+								InteractiveElement *ie = &mayaScene->interactiveUpdateMap[seIt->first];
 								ie->triggeredFromTransform = true;
-								leafList.push_back(&mayaScene->interactiveUpdateMap[sceneElement.first]);
+								leafList.push_back(&mayaScene->interactiveUpdateMap[seIt->first]);
 							}
 						}
 					}
@@ -495,7 +497,7 @@ void RenderQueueWorker::iprFindLeafNodes()
 			}
 		}
 		else{
-			leafList.push_back(element.second);
+			leafList.push_back(it->second);
 		}
 	}
 
@@ -506,8 +508,9 @@ void RenderQueueWorker::iprFindLeafNodes()
 	while (modifiedElementList.size() > 0)
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-	for (auto leaf : leafList)
-		modifiedElementList.push_back(leaf);
+	std::vector<InteractiveElement *>::iterator llIt;
+	for (llIt = leafList.begin(); llIt != leafList.end(); llIt++)
+		modifiedElementList.push_back(*llIt);
 }
 void RenderQueueWorker::IPRIdleCallback(float time, float lastTime, void *userPtr)
 {
@@ -595,7 +598,7 @@ void RenderQueueWorker::renderProcessThread()
 
 void RenderQueueWorker::updateRenderView(EventQueue::Event& e)
 {
-	std::shared_ptr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
+	sharedPtr<RenderGlobals> renderGlobals = MayaTo::getWorldPtr()->worldRenderGlobalsPtr;
 	int width, height;
 	renderGlobals->getWidthHeight(width, height);
 
@@ -711,7 +714,7 @@ void RenderQueueWorker::startRenderQueueWorker()
 					status = MRenderView::startRender(width, height, true, true);
 				}
 				MayaTo::getWorldPtr()->setRenderState(MayaTo::MayaToWorld::RSTATETRANSLATING);
-				std::shared_ptr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
+				sharedPtr<MayaScene> mayaScene = MayaTo::getWorldPtr()->worldScenePtr;
 
 				if (MGlobal::mayaState() != MGlobal::kBatch)
 				{

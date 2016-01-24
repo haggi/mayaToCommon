@@ -1038,38 +1038,6 @@ namespace MAYATO_OSLUTIL{
 		oslNode.paramArray = paramArray;
 		addNodeToList(oslNode);
 
-		//for (auto node : oslNodeArray)
-		//{
-		//	Logging::debug(MString("NEW: Creating shading node: ") + node.nodeName + " type: " + node.typeName);
-		//	createOSLShader(node.typeName, node.nodeName, node.paramArray);
-		//}
-		//for (auto conn:connectionList)
-		//{
-		//	Logging::debug(MString("NEW: Creating connection from: ") + conn.sourceNode + "." + conn.sourceAttribute + " --> " + conn.destNode + "." + conn.destAttribute);
-		//}
-		//connectOSLShaders(connectionList);
-
-		// now create the current node
-		//Logging::debug(MString("Register shader type: ") + snode.typeName + " named: " + snode.fullName);
-		//saveOSLNodeNameInArray(snode.fullName);
-
-		//// now we search for connected output attributes and create a helper node if necessary
-		//for (uint i = 0; i < snode.outputAttributes.size(); i++)
-		//{
-		//	ShaderAttribute& sa = snode.outputAttributes[i];
-		//	MPlug thisPlug = depFn.findPlug(sa.name.c_str());
-		//	// isConnected checks if a plug or its primary children are connected as destination
-		//	if (!isConnected(sa.name.c_str(), snode.mobject, false))
-		//		continue;
-
-		//	if (thisPlug.numConnectedChildren() == 0)
-		//		continue;
-
-		//	MString outPlugHelperNodeName = createPlugHelperNodeName(thisPlug, true);
-		//	if (!doesHelperNodeExist(outPlugHelperNodeName))
-		//		createPlugHelperNode(thisPlug, true);
-		//}
-		//connectOSLShaders(connectionList);
 	}
 
 	void OSLUtilClass::initOSLUtil()

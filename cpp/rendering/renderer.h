@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <maya/MString.h>
+#include "definitions.h"
 
 class MayaObject;
 class MObject;
@@ -38,10 +39,10 @@ namespace MayaTo{
 		// the geometry is defined at the very first step and later this definition will be updated for every motion step.
 		// Other renderers will need a complete definition of all motionblur steps at once, so the motion steps will be
 		// in the geometry e.g. with obj->addMeshData(); and at the very last step, everything is defined.
-		virtual void updateShape(std::shared_ptr<MayaObject> obj) = 0;
+		virtual void updateShape(sharedPtr<MayaObject> obj) = 0;
 		// This method is necessary only if the renderer is able to update the transform definition interactively.
 		// In other cases, the world space transform will be defined directly during the creation of the geometry.
-		virtual void updateTransform(std::shared_ptr<MayaObject> obj) = 0;
+		virtual void updateTransform(sharedPtr<MayaObject> obj) = 0;
 		virtual void abortRendering() = 0;
 		// make an interactive update of the scene. Before this call the interactiveUpdateList should be filled appropriatly
 		virtual void doInteractiveUpdate() = 0;

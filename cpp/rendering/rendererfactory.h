@@ -11,7 +11,7 @@ namespace MayaTo
 	{
 	public:
 		void createRenderer();
-		std::shared_ptr<Renderer> getRenderer();
+		sharedPtr<Renderer> getRenderer();
 		void deleteRenderer();
 	};
 };

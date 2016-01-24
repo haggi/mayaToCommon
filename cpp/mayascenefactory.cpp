@@ -7,9 +7,9 @@ namespace MayaTo
 {
 	void MayaSceneFactory::createMayaScene()
 	{
-		getWorldPtr()->worldScenePtr = std::shared_ptr<MayaScene> (new MayaScene());
+		getWorldPtr()->worldScenePtr = sharedPtr<MayaScene> (new MayaScene());
 	}
-	std::shared_ptr<MayaScene> MayaSceneFactory::getMayaScene()
+	sharedPtr<MayaScene> MayaSceneFactory::getMayaScene()
 	{
 		return getWorldPtr()->worldScenePtr;
 	}

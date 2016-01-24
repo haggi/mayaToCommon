@@ -12,9 +12,9 @@
 #include "world.h"
 
 
-std::shared_ptr<MayaObject> MayaScene::getObject(MObject obj)
+sharedPtr<MayaObject> MayaScene::getObject(MObject obj)
 {
-	std::shared_ptr<MayaObject> mo = nullptr;
+	sharedPtr<MayaObject> mo = nullptr;
 	size_t numobjects = this->objectList.size();
 	for (size_t objId = 0; objId < numobjects; objId++)
 	{
@@ -24,9 +24,9 @@ std::shared_ptr<MayaObject> MayaScene::getObject(MObject obj)
 	return mo;
 }
 
-std::shared_ptr<MayaObject> MayaScene::getObject(MDagPath dp)
+sharedPtr<MayaObject> MayaScene::getObject(MDagPath dp)
 {
-	std::shared_ptr<MayaObject> mo = nullptr;
+	sharedPtr<MayaObject> mo = nullptr;
 	size_t numobjects = this->objectList.size();
 	for (size_t objId = 0; objId < numobjects; objId++)
 	{
@@ -36,15 +36,15 @@ std::shared_ptr<MayaObject> MayaScene::getObject(MDagPath dp)
 	return mo;
 }
 
-void MayaScene::clearObjList(std::vector<std::shared_ptr<MayaObject>> & objList)
+void MayaScene::clearObjList(std::vector<sharedPtr<MayaObject>> & objList)
 {
 	objList.clear();
 }
 
-void MayaScene::clearObjList(std::vector<std::shared_ptr<MayaObject>> & objList, std::shared_ptr<MayaObject> notThisOne)
+void MayaScene::clearObjList(std::vector<sharedPtr<MayaObject>> & objList, sharedPtr<MayaObject> notThisOne)
 {
 	size_t numElements = objList.size();
-	std::shared_ptr<MayaObject> tmpCopy;
+	sharedPtr<MayaObject> tmpCopy;
 	for (size_t i = 0; i < numElements; i++)
 	{
 		if (objList[i] == notThisOne)
@@ -61,11 +61,11 @@ void MayaScene::setCurrentCamera(MDagPath camDagPath)
 	this->uiCamera = camDagPath;
 }
 
-std::vector<std::shared_ptr<MayaObject>>  parentList;
+std::vector<sharedPtr<MayaObject>>  parentList;
 
-void MayaScene::checkParent(std::shared_ptr<MayaObject> obj)
+void MayaScene::checkParent(sharedPtr<MayaObject> obj)
 {
-	std::vector<std::shared_ptr<MayaObject>>::iterator iter;
+	std::vector<sharedPtr<MayaObject>>::iterator iter;
 	MFnDagNode node(obj->mobject);
 	if (node.parentCount() == 0)
 	{
@@ -144,7 +144,7 @@ bool MayaScene::isLight(MObject obj)
 	return false;
 }
 
-void  MayaScene::classifyMayaObject(std::shared_ptr<MayaObject> obj)
+void  MayaScene::classifyMayaObject(sharedPtr<MayaObject> obj)
 {
 	if (isCamera(obj->mobject))
 	{

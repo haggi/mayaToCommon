@@ -11,7 +11,7 @@ namespace MayaTo
 	{
 	public:
 		void createRenderGlobals();
-		std::shared_ptr<RenderGlobals> getRenderGlobals();
+		sharedPtr<RenderGlobals> getRenderGlobals();
 		void deleteRenderGlobals();
 	};
 };

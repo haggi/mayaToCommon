@@ -49,8 +49,8 @@ namespace EventQueue
 		// of the original what means I would have to move the move the unique_ptr<>
 		// of a const object because it is automatically created Event( const & Event ) and const
 		// elements cannot be modified so I have to use another way here
-		std::shared_ptr<RV_PIXEL> pixelData;
-		std::shared_ptr<MayaTo::CmdArgs> cmdArgsData;
+		sharedPtr<RV_PIXEL> pixelData;
+		sharedPtr<MayaTo::CmdArgs> cmdArgsData;
 
 		size_t tile_xmin, tile_xmax, tile_ymin, tile_ymax;
 		Event()
