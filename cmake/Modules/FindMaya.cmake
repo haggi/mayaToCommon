@@ -9,6 +9,7 @@
 # MAYA_<lib>_FOUND    Defined if <lib> has been found
 # MAYA_<lib>_LIBRARY  Path to <lib> library
 # MAYA_INCLUDE_DIRS   Path to the devkit's include directories
+# MAYA_API_VERSION    Maya API version
 #
 # IMPORTANT: Currently, there's only support for OSX platform and Maya version 2012.
 
@@ -134,6 +135,7 @@ FIND_PATH(MAYA_DEVKIT_INC_DIR GL/glext.h
     /devkit/plug-ins/
   DOC "Maya's devkit headers path"
 )
+
 LIST(APPEND MAYA_INCLUDE_DIRS ${MAYA_DEVKIT_INC_DIR})
 
 FOREACH(MAYA_LIB
@@ -162,7 +164,14 @@ FOREACH(MAYA_LIB
   LIST(APPEND ${MAYA_LIBRARIES} MAYA_${MAYA_LIB}_LIBRARY)
 ENDFOREACH(MAYA_LIB)
 
+if(MAYA_INCLUDE_DIRS AND EXISTS "${MAYA_INCLUDE_DIR}/maya/MTypes.h")
+    FILE(STRINGS ${MAYA_INCLUDE_DIR}/maya/MTypes.h TMP REGEX "#define MAYA_API_VERSION.*$")
+    STRING(REGEX MATCHALL "[0-9]+" MAYA_API_VERSION ${TMP})
+endif()
+
 # handle the QUIETLY and REQUIRED arguments and set MAYA_FOUND to TRUE if
 # all listed variables are TRUE
 INCLUDE(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(Maya DEFAULT_MSG ${MAYA_LIBRARIES} MAYA_INCLUDE_DIRS)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(Maya DEFAULT_MSG 
+    ${MAYA_LIBRARIES} 
+    MAYA_INCLUDE_DIRS)
