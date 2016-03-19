@@ -7,13 +7,12 @@ Welcome to mayatocommon's documentation!
 ========================================
 
 Contents:
-* Here is the installation reference: :ref:`install`
-* And here is a demo page :ref:`demo`
 
 .. toctree::
    :maxdepth: 2
 
-
+   install
+   demo
 
 Indices and tables
 ==================
