@@ -7,8 +7,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   install
-   demo
+   install.rst
+   demo.rst
    
 .. note:: This is a note. 
     I love notes.   
